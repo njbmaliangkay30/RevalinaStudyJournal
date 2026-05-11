@@ -68,7 +68,7 @@ export const Header: React.FC = () => {
           {t('hdr_eyebrow')}
         </div>
         
-        {/* === TOMBOL KOIN INTERAKTIF MENGGUNAKAN FRAMER MOTION === */}
+        {/* Tombol Koin Interaktif */}
         <motion.div 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
@@ -131,4 +131,24 @@ export const Header: React.FC = () => {
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <div className="text-[10px] font-bold text-white/50 tracking-widest uppercase">{t('prog_total_lbl')}</div>
-            <div className="text-[9px] font-bold text-[var(--gold
+            <div className="text-[9px] font-bold text-[var(--gold-light)] bg-[var(--gold)]/10 px-2.5 py-0.5 rounded-full border border-[var(--gold)]/20 tracking-wider">
+              {blockLabel}
+            </div>
+          </div>
+          <div className="h-2 bg-white/10 rounded-full mb-2 overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.3)] relative">
+            <div className="h-full rounded-full bg-gradient-to-r from-[var(--gold-dark)] via-[var(--gold)] to-[#fff] shadow-[0_0_10px_rgba(245,200,66,0.8)] relative" 
+                 style={{ width: `${progressPct}%`, transition: 'width 1.2s ease-out' }}>
+               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_3px_rgba(255,255,255,0.8)] animate-pulse" />
+            </div>
+          </div>
+          <div className="flex justify-between text-[11px] font-medium text-white/40">
+            <span><strong className="text-[var(--gold-light)] text-[12px]">{doneCount}</strong> {t('prog_done_lbl')}</span>
+            <span>{t('prog_target_lbl')} <strong className="text-white/80">{target}</strong></span>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="sparkles" id="sparkles"></div>
+    </div>
+  );
+};
