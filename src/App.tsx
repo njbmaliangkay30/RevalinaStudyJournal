@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // Tambahan AnimatePresence
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from './store/useAppStore';
 import { Header } from './components/layout/Header';
 import { TabBar } from './components/layout/TabBar';
@@ -15,9 +15,27 @@ function App() {
   const renderActivePage = () => {
     switch (activeTab) {
       case 'dashboard': return <Dashboard />;
-      case 'tracker': return <div className="text-center p-8 text-[var(--text-mid)] font-semibold">Halaman Tracker Belum Dibuat 🌿</div>;
-      case 'reward': return <div className="text-center p-8 text-[var(--text-mid)] font-semibold">Halaman Reward Belum Dibuat 🎁</div>;
-      case 'setting': return <div className="text-center p-8 text-[var(--text-mid)] font-semibold">Halaman Pengaturan Belum Dibuat ⚙️</div>;
+      case 'tracker':   return (
+        <div className="flex flex-col items-center justify-center gap-3 p-12 text-center">
+          <span className="text-4xl">🌿</span>
+          <p className="text-[13px] font-semibold text-[var(--text-mid)]">Tracker sedang disiapkan</p>
+          <p className="text-[11px] text-[var(--text-soft)]">Fitur ini akan hadir segera</p>
+        </div>
+      );
+      case 'reward':    return (
+        <div className="flex flex-col items-center justify-center gap-3 p-12 text-center">
+          <span className="text-4xl">🎁</span>
+          <p className="text-[13px] font-semibold text-[var(--text-mid)]">Reward sedang disiapkan</p>
+          <p className="text-[11px] text-[var(--text-soft)]">Kumpulkan poin dulu ya!</p>
+        </div>
+      );
+      case 'setting':   return (
+        <div className="flex flex-col items-center justify-center gap-3 p-12 text-center">
+          <span className="text-4xl">⚙️</span>
+          <p className="text-[13px] font-semibold text-[var(--text-mid)]">Pengaturan sedang disiapkan</p>
+          <p className="text-[11px] text-[var(--text-soft)]">Sabar ya, peri sedang kerja keras!</p>
+        </div>
+      );
       default: return <Dashboard />;
     }
   };
@@ -29,38 +47,33 @@ function App() {
 
       <Header />
 
-      <main className="relative z-20 px-4 -mt-6 pb-32">
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
+      <main className="relative z-20 px-4 pt-3 pb-28">
+
+        {/* Badge "Tersinkron" — lebih kecil, tidak terlalu mendominasi */}
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-center gap-2 bg-white/60 dark:bg-black/40 backdrop-blur-xl py-1.5 px-4 rounded-full mx-auto w-fit mb-4 border border-[var(--border-card)] shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-center gap-1.5 mb-3"
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--green-leaf)] animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_8px_var(--green-leaf)]"></div>
-          <span className="text-[10px] font-bold text-[var(--text-soft)] uppercase tracking-wider">
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--green-leaf)] animate-[pulse_2.5s_ease-in-out_infinite] shadow-[0_0_6px_var(--green-leaf)]" />
+          <span className="text-[9px] font-bold text-[var(--text-soft)] uppercase tracking-wider opacity-60">
             Tersinkron
           </span>
         </motion.div>
 
-        <div className="pages-wrapper relative">
-          {/* Efek Transisi Antar Tab yang Mewah */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab} // Kunci penting agar Framer Motion tahu kapan harus animasi
-              initial={{ opacity: 0, y: 15, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -15, scale: 0.98 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} // Spring curve buatan Apple
-            >
-              {renderActivePage()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        <div className="text-center mt-12 mb-4">
-          <span className="text-[10px] font-bold tracking-widest text-[var(--text-soft)] uppercase opacity-40">
-            ✦ Revalina's Pixie Dust ✦
-          </span>
-        </div>
+        {/* Wrapper halaman dengan transisi */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 12, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.985 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {renderActivePage()}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <TabBar />
