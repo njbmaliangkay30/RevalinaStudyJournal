@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n';
 
@@ -57,31 +58,35 @@ export const Header: React.FC = () => {
   }, [theme]);
 
   return (
-    // DI SINI PERUBAHANNYA: Menghapus class .header lama dari CSS, pakai Tailwind murni
     <div className="relative pt-8 pb-10 px-6 rounded-b-[40px] shadow-[0_10px_40px_rgba(0,0,0,0.08)] z-10 overflow-hidden"
          style={{ background: 'linear-gradient(160deg, var(--green-deep) 0%, var(--green-mid) 100%)' }}>
       
-      <div className="absolute inset-0 pointer-events-none opacity-30 mix-blend-overlay">
-         {/* Tekstur grain atau cahaya bisa ditaruh di sini jika mau */}
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-30 mix-blend-overlay"></div>
       
       <div className="flex justify-between items-start relative z-10">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-white/50 font-bold drop-shadow-sm">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-white/50 font-bold drop-shadow-sm mt-1">
           {t('hdr_eyebrow')}
         </div>
-        <div className="bg-black/20 border border-white/10 rounded-full px-3 py-1 text-[var(--gold-light)] font-bold text-[12px] flex items-center gap-1.5 shadow-inner backdrop-blur-md">
-          <span className="text-[14px]">✨</span> {coins}
-        </div>
+        
+        {/* === TOMBOL KOIN INTERAKTIF MENGGUNAKAN FRAMER MOTION === */}
+        <motion.div 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.9 }}
+          className="bg-black/20 border border-white/10 rounded-full px-3 py-1.5 text-[var(--gold-light)] font-bold text-[13px] flex items-center gap-1.5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] backdrop-blur-md cursor-pointer select-none origin-right"
+        >
+          <span className="text-[14px] animate-pulse drop-shadow-[0_0_8px_rgba(245,200,66,0.6)]">✨</span> 
+          <span>{coins}</span>
+        </motion.div>
       </div>
 
-      <div className="mt-6 flex flex-col relative z-10">
+      <div className="mt-5 flex flex-col relative z-10">
         <div className="flex items-center flex-wrap gap-2 mb-1">
-          <h1 className="font-serif text-[32px] text-white leading-tight">
+          <h1 className="font-serif text-[32px] text-white leading-tight tracking-tight">
             <span className="text-[var(--gold-light)] drop-shadow-[0_0_15px_rgba(245,200,66,0.3)]">
               {name || "Peri Kecil"},
             </span>
           </h1>
-          <span className="bg-[var(--gold)]/10 border border-[var(--gold)]/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[var(--gold-light)] tracking-wide backdrop-blur-sm">
+          <span className="bg-[var(--gold)]/10 border border-[var(--gold)]/20 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[var(--gold-light)] tracking-wider backdrop-blur-sm">
             {rankStr}
           </span>
         </div>
@@ -98,7 +103,12 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-5 mt-8 relative z-10 bg-white/5 rounded-3xl p-4 border border-white/10 backdrop-blur-md shadow-inner">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, type: "spring" }}
+        className="flex items-center gap-5 mt-8 relative z-10 bg-white/5 rounded-3xl p-4 border border-white/10 backdrop-blur-md shadow-inner"
+      >
         <div className="relative w-[70px] h-[70px] flex-shrink-0 drop-shadow-[0_0_15px_rgba(245,200,66,0.4)]">
           <svg width="70" height="70" viewBox="0 0 80 80" className="-rotate-90">
             <defs>
@@ -121,22 +131,4 @@ export const Header: React.FC = () => {
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <div className="text-[10px] font-bold text-white/50 tracking-widest uppercase">{t('prog_total_lbl')}</div>
-            <div className="text-[9px] font-bold text-[var(--gold-light)] bg-[var(--gold)]/10 px-2 py-0.5 rounded-full border border-[var(--gold)]/20">
-              {blockLabel}
-            </div>
-          </div>
-          <div className="h-1.5 bg-white/10 rounded-full mb-2 overflow-hidden">
-            <div className="h-full rounded-full bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold-light)] shadow-[0_0_10px_rgba(245,200,66,0.8)]" 
-                 style={{ width: `${progressPct}%`, transition: 'width 1.2s ease-out' }}></div>
-          </div>
-          <div className="flex justify-between text-[11px] font-medium text-white/40">
-            <span><strong className="text-[var(--gold-light)] text-[12px]">{doneCount}</strong> {t('prog_done_lbl')}</span>
-            <span>{t('prog_target_lbl')} <strong className="text-white/80">{target}</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <div className="sparkles" id="sparkles"></div>
-    </div>
-  );
-};
+            <div className="text-[9px] font-bold text-[var(--gold
