@@ -189,3 +189,69 @@ const dictionary = {
     mood_title: "Perasaanmu",
     mood_sub: "Kerja bagus! Bagaimana perasaanmu setelah membaca hari ini?",
     exam_title: "Hari Penentuan! 📝",
+    exam_sub: "Bagaimana hasil belajarmu selama ini?",
+    btn_save_score: "Simpan Nilai ✦",
+    err_score: "Masukkan rentang nilai yang benar (0-100) ya!",
+    res_title_def: "Selamat!",
+    res_msg_def: "Kerja bagus!",
+    timer_title: "Fokus Sihir",
+    timer_status_ready: "Siap memulai sesi fokus 25 menit?",
+    theme_ice: "Fokus Es Kristal",
+    theme_candle: "Lilin Semangat",
+    theme_potion: "Ramuan Fokus Sihir",
+    timer_spotify: "✦ Login ke akun Spotify-mu di browser ini agar lagu dapat berputar penuh ✦",
+    timer_extra_desc: "Masih belum selesai? Tambah waktu:",
+    btn_extra_5: "+ 5 Menit",
+    btn_extra_10: "+ 10 Menit",
+    btn_rest: "Cukup, Ayo Istirahat 💧",
+    btn_start_focus: "Mulai Fokus ✦",
+    trk_ppt_title: "✦ Petak PPT — Tandai yang Sudah Dibaca",
+    trk_ppt_guide: "🌿 Klik titik untuk mencatat PPT selesai",
+    trk_ppt_popup_sub: "Apa judul PPT yang sudah kamu baca?",
+    trk_ppt_popup_edit: "Edit judul PPT atau batalkan tandai selesai.",
+    trk_ppt_placeholder: "Tulis judul PPT di sini...",
+    btn_mark_done: "✦ Tandai Selesai",
+    btn_unmark: "✕ Batalkan Tandai",
+    set_logout_desc: "Ingin berganti identitas atau memindahkan jurnal ini untuk orang lain?",
+    btn_logout: "🚪 Ganti Akun (Log Out)",
+    confirm_logout: "Apakah kamu yakin ingin keluar? Pastikan indikator koneksi di atas bertuliskan 'Tersinkron Penuh' ya!",
+    txt_ready: "✦ Siap",
+    setup_block_lbl: "Topik Blok Saat Ini:",
+    setup_block_ph: "Contoh: Anatomi Reproduksi Pria",
+    lb_title: "📜 Perjalanan Blokku",
+    lb_tab_recent: "🕐 Terakhir",
+    lb_tab_best: "🏆 Terbaik",
+    lb_tab_podium: "✦ Podium",
+    lb_loading: "✦ Memuat riwayat...",
+    lb_no_notion: "Hubungkan ke Notion untuk melihat riwayat.",
+    lb_empty: "Belum ada riwayat blok tersimpan.",
+    lb_error: "Gagal memuat riwayat.",
+    lb_no_blocks: "Belum ada riwayat blok.",
+    lb_no_name: "(Tanpa Nama)",
+    lb_active: "aktif",
+    lb_more: "Selengkapnya"
+  },
+  en: {
+    hdr_eyebrow: "Study Journey",
+    hdr_greeting: "happy studying!",
+    prog_lbl: "progress",
+    prog_total_lbl: "Total Slides This Block",
+    prog_done_lbl: "slides read",
+    prog_target_lbl: "target",
+    // Tambahkan bahasa Inggris lainnya nanti jika diperlukan
+  }
+};
+
+export const useTranslation = () => {
+  const lang = useAppStore((state) => state.lang);
+
+  const t = (key: keyof typeof dictionary['id'], ...args: (string | number)[]) => {
+    let str = dictionary[lang]?.[key] || dictionary['id'][key] || key;
+    args.forEach((arg, i) => { 
+      str = str.replace(`{${i + 1}}`, String(arg)); 
+    });
+    return str;
+  };
+
+  return { t };
+};
