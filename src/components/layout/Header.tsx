@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n';
 
@@ -8,11 +7,7 @@ const MAGIC_QUOTES = [
   "Satu halaman lagi, satu kepakan sayap lebih tinggi.",
   "Jangan berhenti saat lelah, berhentilah saat selesai.",
   "Fokus hari ini adalah keajaiban esok hari.",
-  "Setiap hal besar dimulai dari satu langkah kecil peri.",
-  "Sihir terkuat adalah ketekunanmu sendiri.",
-  "Debu peri tidak bekerja jika kamu tidak percaya pada dirimu sendiri.",
-  "Belajar adalah cara kita menumbuhkan sayap untuk terbang.",
-  "Masa depan adalah milik mereka yang percaya pada keindahan mimpinya."
+  "Setiap hal besar dimulai dari satu langkah kecil peri."
 ];
 
 export const Header: React.FC = () => {
@@ -38,10 +33,10 @@ export const Header: React.FC = () => {
 
   let rankStr = progressPct >= 100 ? "👑 Ratu Pixie" : progressPct >= 75 ? "🌿 Peri Penjaga" : progressPct >= 50 ? "✨ Peri Cahaya" : "🌱 Peri Pemula";
 
-  let blockLabel = "Memuat data...";
+  let blockLabel = "Belum Diatur";
   if (blockStart && blockEnd) {
-    const s = new Date(blockStart).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
-    const e = new Date(blockEnd).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+    const s = new Date(blockStart).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
+    const e = new Date(blockEnd).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
     blockLabel = `${s} – ${e}`;
   }
 
@@ -56,17 +51,7 @@ export const Header: React.FC = () => {
       sp.style.height=sp.style.width;
       sp.style.left=Math.random()*100+"%"; 
       sp.style.bottom=(Math.random()*-20)+"px";
-      if (theme === 'moon') {
-        const moonColors = ["#8ab4f8","#c3d6fe","#a78bfa","#c4b5fd","#e0e8ff"];
-        sp.style.background = moonColors[Math.floor(Math.random()*moonColors.length)];
-        sp.style.boxShadow = `0 0 6px ${sp.style.background}, 0 0 12px ${sp.style.background}88`;
-      } else if (theme === 'sakura') {
-        const sakuraColors = ["#f090a0","#e87080","#ffc0d0","#f0b0c0","#ffe0e8"];
-        sp.style.background = sakuraColors[Math.floor(Math.random()*sakuraColors.length)];
-        sp.style.boxShadow = `0 0 6px ${sp.style.background}, 0 0 12px ${sp.style.background}88`;
-      } else {
-        sp.style.background = Math.random()>0.5?"#f5c842":"#8dc95a";
-      }
+      sp.style.background = Math.random() > 0.5 ? "#f5c842" : "#8dc95a";
       sp.style.animationDuration=(3+Math.random()*6)+"s";
       sp.style.animationDelay=(Math.random()*5)+"s";
       sp.style.setProperty('--float-dist',-(180+Math.random()*200)+'px');
@@ -74,6 +59,7 @@ export const Header: React.FC = () => {
     }
   }, [theme]);
 
+  // JIKA FILE src/index.css BENAR ISINYA, MAKA CLASS .header INI PASTI HIJAU
   return (
     <div className="header">
       
@@ -88,22 +74,16 @@ export const Header: React.FC = () => {
         <div className="header-eyebrow">
           <span>{t('hdr_eyebrow')}</span>
         </div>
-        <motion.div 
-          whileHover={{ scale: 1.05 }} 
-          whileTap={{ scale: 0.95 }}
-          className="coin-badge" 
-          style={{ cursor: "pointer" }}
-        >
-          <span style={{ fontSize: "14px", marginRight: "2px" }} className="animate-pulse drop-shadow-md">✨</span> 
-          <span>{coins}</span>
-        </motion.div>
+        <div className="coin-badge">
+          <span>✨</span> {coins}
+        </div>
       </div>
 
       <div className="header-name">
         <span className="name-text">
           {name || "Peri Kecil"},
         </span>
-        <span className="rank-badge">
+        <span className="rank-badge" style={{ display: 'inline-flex', alignItems: 'center' }}>
           {rankStr}
         </span>
       </div>
@@ -117,12 +97,12 @@ export const Header: React.FC = () => {
             {new Date().toLocaleDateString(lang === 'id' ? "id-ID" : "en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
-        <div id="quote-txt" style={{ fontFamily: 'var(--serif)', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, opacity: 0.95, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}>
+        <div style={{ fontFamily: 'var(--serif)', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, opacity: 0.95, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}>
           ❝ {quote} ❞
         </div>
       </div>
 
-      <div className="prog-wrap">
+      <div className="prog-wrap" style={{ marginTop: '20px' }}>
         <div className="ring-outer">
           <svg width="80" height="80" viewBox="0 0 80 80">
             <defs>
@@ -135,7 +115,7 @@ export const Header: React.FC = () => {
             <circle className="ring-bg" cx="40" cy="40" r="34" />
             <circle className="ring-track" cx="40" cy="40" r="34" />
             <circle className="ring-glow" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset }} />
-            <circle className="ring-fill" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset }} />
+            <circle className="ring-fill" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)' }} />
           </svg>
           <div className="ring-center">
             <div className="ring-pct">{progressPct}%</div>
@@ -143,17 +123,17 @@ export const Header: React.FC = () => {
           </div>
         </div>
         
-        <div className="prog-info">
+        <div className="prog-info" style={{ flex: 1, paddingLeft: '8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '7px' }}>
             <div className="prog-label" style={{ marginBottom: 0 }}>{t('prog_total_lbl')}</div>
             <div className="date-badge">
-              {blockLabel}
+              ✦ {blockLabel}
             </div>
           </div>
           <div className="prog-bar-track">
-            <div className="prog-bar-fill" style={{ width: `${progressPct}%` }}></div>
+            <div className="prog-bar-fill" style={{ width: `${progressPct}%`, transition: 'width 1.2s cubic-bezier(.4,0,.2,1)' }}></div>
           </div>
-          <div className="prog-nums">
+          <div className="prog-nums" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span><strong>{doneCount}</strong> {t('prog_done_lbl')}</span>
             <span>{t('prog_target_lbl')} <strong>{target}</strong></span>
           </div>
@@ -161,3 +141,6 @@ export const Header: React.FC = () => {
       </div>
       
       <div className="sparkles" id="sparkles"></div>
+    </div>
+  );
+};
