@@ -1,17 +1,68 @@
 import React, { useMemo } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { useTranslation } from '../lib/i18n';
+import { Hourglass, BookOpen, Target, Flame, Trophy } from 'lucide-react';
 
+// --- KOMPONEN BANTUAN UNTUK KARTU MODERN ---
+// Ini memastikan semua kartu desainnya konsisten, elegan, dan rapi
+interface CardProps {
+  title: string;
+  value: React.ReactNode;
+  subtitle: string;
+  icon: React.ElementType;
+  iconColorClass: string; // untuk efek aura CSS lama Anda
+  isHalf?: boolean;
+}
+
+const ModernCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Icon, iconColorClass, isHalf }) => (
+  <div 
+    className={`relative overflow-hidden rounded-[20px] p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+      isHalf ? 'col-span-1' : 'col-span-2'
+    }`}
+    style={{
+      backgroundColor: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
+      boxShadow: '0 8px 30px rgba(0,0,0,0.04)'
+    }}
+  >
+    {/* Header Kartu: Ikon & Judul */}
+    <div className="flex items-center gap-3 mb-3">
+      <div className={`p-2 rounded-2xl bg-white/40 dark:bg-black/20 ${iconColorClass}`}>
+        <Icon size={isHalf ? 18 : 22} strokeWidth={2.5} style={{ color: 'var(--text-mid)' }} />
+      </div>
+      <h3 
+        className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]"
+        style={{ color: 'var(--text-soft)' }}
+      >
+        {title}
+      </h3>
+    </div>
+
+    {/* Isi Kartu: Angka Besar & Subtitle */}
+    <div className="flex flex-col">
+      <div 
+        className={`${isHalf ? 'text-3xl' : 'text-4xl'} font-extrabold font-sans leading-none flex items-baseline gap-1`}
+        style={{ color: 'var(--text-dark)', textShadow: '0 0 15px rgba(245,200,66,0.1)' }}
+      >
+        {value}
+      </div>
+      <div 
+        className="text-[11px] font-semibold mt-1.5 leading-snug"
+        style={{ color: 'var(--text-mid)' }}
+      >
+        {subtitle}
+      </div>
+    </div>
+  </div>
+);
+
+// --- HALAMAN DASHBOARD UTAMA ---
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
-  
-  // Mengambil data dari State Management
   const { slides, target, blockEnd, pptDots } = useAppStore();
 
-  // Menghitung total slide yang sudah dibaca
   const doneCount = pptDots.filter(d => d.done).length;
 
-  // Menghitung Sisa Hari Ujian
   const examInfo = useMemo(() => {
     if (!blockEnd) return { val: "-", lbl: t('lbl_not_set'), iconClass: "", pacingVal: "-", pacingLbl: "PPT / hari" };
     
@@ -29,7 +80,7 @@ export const Dashboard: React.FC = () => {
         lbl: t('lbl_until_exam'),
         iconClass: diffDays > 7 ? "aura-blue" : diffDays > 3 ? "aura-amber" : "aura-red",
         pacingVal: sisaSlide > 0 ? Math.ceil(sisaSlide / diffDays).toString() : "Done!",
-        pacingLbl: sisaSlide > 0 ? t('lbl_ppt_day') : "Great job!"
+        pacingLbl: sisaSlide > 0 ? t('lbl_ppt_day') : "Kerja luar biasa!"
       };
     } else if (diffDays === 0) {
       return {
@@ -37,7 +88,7 @@ export const Dashboard: React.FC = () => {
         lbl: t('lbl_show_wings'),
         iconClass: "aura-red",
         pacingVal: sisaSlide > 0 ? sisaSlide.toString() : "Done!",
-        pacingLbl: sisaSlide > 0 ? t('lbl_ppt_more') : "Great job!"
+        pacingLbl: sisaSlide > 0 ? t('lbl_ppt_more') : "Siap ujian!"
       };
     } else {
       return {
@@ -45,12 +96,11 @@ export const Dashboard: React.FC = () => {
         lbl: t('lbl_exam_passed'),
         iconClass: "aura-blue",
         pacingVal: "Done!",
-        pacingLbl: "Great job!"
+        pacingLbl: "Misi selesai."
       };
     }
   }, [blockEnd, target, doneCount, t]);
 
-  // Menghitung Hari Beruntun (Streak)
   const streakInfo = useMemo(() => {
     let streak = 0;
     const d = new Date();
@@ -84,61 +134,78 @@ export const Dashboard: React.FC = () => {
   }, [slides, t]);
 
   return (
-    <div className="flex flex-col gap-3.5">
-      {/* Kartu Ujian */}
-      <div className="fc-card">
-        <div className={`fc-bg-icon ${examInfo.iconClass}`}>⏳</div>
-        <div className="fc-content">
-          <div className="fc-title">{t('db_exam_lbl')}</div>
-          <div className="fc-val">{examInfo.val}</div>
-          <div className="fc-sub">{examInfo.lbl}</div>
-        </div>
+    <div className="flex flex-col gap-4">
+      {/* Grid CSS untuk mengatur tata letak kartu modern */}
+      <div className="grid grid-cols-2 gap-3.5">
+        
+        <ModernCard 
+          title={t('db_exam_lbl')}
+          value={examInfo.val}
+          subtitle={examInfo.lbl}
+          icon={Hourglass}
+          iconColorClass={examInfo.iconClass}
+          isHalf={false}
+        />
+
+        <ModernCard 
+          title={t('db_read_lbl')}
+          value={doneCount}
+          subtitle={`${t('db_read_tgt')} ${target}`}
+          icon={BookOpen}
+          iconColorClass="aura-gold"
+          isHalf={true}
+        />
+
+        <ModernCard 
+          title={t('db_daily_lbl')}
+          value={examInfo.pacingVal}
+          subtitle={examInfo.pacingLbl}
+          icon={Target}
+          iconColorClass="aura-green"
+          isHalf={true}
+        />
+
+        <ModernCard 
+          title={t('db_streak_lbl')}
+          value={
+            <>
+              {streakInfo.streak} 
+              <span className="text-xl ml-1" style={{ color: 'var(--amber)' }}>
+                {t('db_streak_day')}
+              </span>
+            </>
+          }
+          subtitle={streakInfo.subTxt}
+          icon={Flame}
+          iconColorClass={streakInfo.iconClass}
+          isHalf={false}
+        />
       </div>
 
-      <div className="flex gap-2.5">
-        {/* Kartu Slide Dibaca */}
-        <div className="fc-card fc-half flex-1">
-          <div className="fc-bg-icon aura-gold">📖</div>
-          <div className="fc-content">
-            <div className="fc-title">{t('db_read_lbl')}</div>
-            <div className="fc-val">{doneCount}</div>
-            <div className="fc-sub">{t('db_read_tgt')} {target}</div>
-          </div>
+      {/* Bagian Riwayat (History) - Diberi sentuhan UI modern */}
+      <div className="mt-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Trophy size={16} style={{ color: 'var(--text-soft)' }} />
+          <h2 className="text-[10px] font-bold tracking-widest uppercase" style={{ color: 'var(--text-soft)' }}>
+            {t('lb_title')}
+          </h2>
+          <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-card)] to-transparent ml-2"></div>
+        </div>
+        
+        <div className="flex gap-2 bg-[var(--bg-tab)] p-1 rounded-[14px] mb-3 border border-[var(--border-card)]/50">
+          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl bg-[var(--bg-card-solid)] text-[var(--text-dark)] shadow-sm transition-all">
+            🕐 {t('lb_tab_recent')}
+          </button>
+          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl text-[var(--text-soft)] hover:bg-white/10 transition-all">
+            🏆 {t('lb_tab_best')}
+          </button>
+          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl text-[var(--text-soft)] hover:bg-white/10 transition-all">
+            ✦ {t('lb_tab_podium')}
+          </button>
         </div>
 
-        {/* Kartu Target Harian */}
-        <div className="fc-card fc-half flex-1">
-          <div className="fc-bg-icon aura-green">🎯</div>
-          <div className="fc-content">
-            <div className="fc-title">{t('db_daily_lbl')}</div>
-            <div className="fc-val">{examInfo.pacingVal}</div>
-            <div className="fc-sub">{examInfo.pacingLbl}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Kartu Streak */}
-      <div className="fc-card">
-        <div className={`fc-bg-icon ${streakInfo.iconClass}`}>🔥</div>
-        <div className="fc-content">
-          <div className="fc-title">{t('db_streak_lbl')}</div>
-          <div className="fc-val">
-            {streakInfo.streak} <span className="text-[20px] ml-1 text-[var(--amber)]">{t('db_streak_day')}</span>
-          </div>
-          <div className="fc-sub">{streakInfo.subTxt}</div>
-        </div>
-      </div>
-
-      {/* Bagian Riwayat (Leaderboard Dummy untuk sekarang) */}
-      <div className="hist-wrap mt-1">
-        <div className="sec-lbl">{t('lb_title')}</div>
-        <div className="lb-tab-bar">
-          <button className="lb-tab-btn active">{t('lb_tab_recent')}</button>
-          <button className="lb-tab-btn">{t('lb_tab_best')}</button>
-          <button className="lb-tab-btn">{t('lb_tab_podium')}</button>
-        </div>
-        <div className="hist-cols min-h-[40px]">
-          <div className="hist-loading">{t('lb_no_notion')}</div>
+        <div className="min-h-[60px] flex items-center justify-center rounded-2xl border border-dashed border-[var(--border-card)] bg-[var(--bg-input)]">
+          <span className="text-[11px] font-medium text-[var(--text-soft)]">{t('lb_no_notion')}</span>
         </div>
       </div>
     </div>
