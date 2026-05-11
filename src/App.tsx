@@ -17,55 +17,54 @@ function App() {
       case 'dashboard': 
         return <Dashboard />;
       case 'tracker': 
-        return <div className="text-center p-8 text-[var(--text-mid)] font-semibold mt-4">Halaman Tracker Belum Dibuat 🌿</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Tracker Belum Dibuat 🌿</div>;
       case 'reward': 
-        return <div className="text-center p-8 text-[var(--text-mid)] font-semibold mt-4">Halaman Reward Belum Dibuat 🎁</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Reward Belum Dibuat 🎁</div>;
       case 'setting': 
-        return <div className="text-center p-8 text-[var(--text-mid)] font-semibold mt-4">Halaman Pengaturan Belum Dibuat ⚙️</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Pengaturan Belum Dibuat ⚙️</div>;
       default: 
         return <Dashboard />;
     }
   };
 
   return (
-    // Memastikan background Gading tetap bersih
-    <div className="min-h-screen transition-colors duration-700 font-sans" style={{ background: 'var(--bg-main)' }}>
+    <>
       <div id="ambient-layer"></div>
       <div id="dim-overlay"></div>
 
-      {/* Header Solid (Tanpa Margin/Padding Siluman) */}
       <Header />
-
-      {/* Bar Sinkronisasi Khas Asli Anda */}
-      <div className="sync-bar ok" style={{ position: 'relative', zIndex: 10, background: 'transparent' }}>
+      
+      {/* Jika ini dihapus TabBar sebelumnya menumpuk. Saya tempatkan ia pada urutannya secara flow statis. 
+          TabBar floating CSS akan berjalan sesuai CSS index Anda yang sudah diletakkan fixed. */}
+      
+      <div className="sync-bar ok" id="sync-bar">
         <div className="sync-dot"></div>
-        <span>✦ Tersinkron Penuh</span>
+        <span id="sync-txt">✦ Tersinkron Penuh</span>
       </div>
 
-      {/* Konten Utama Murni (Halaman Dashboard/Tracker/Dll) */}
-      <main className="main" style={{ paddingBottom: '120px' }}>
+      <div className="main" style={{ paddingBottom: '100px' }}>
         <div className="pages-wrapper">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.3 }}
+              style={{ width: '100%' }}
             >
               {renderActivePage()}
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
 
-        {/* Watermark/Footer Kecil di Ujung Bawah */}
-        <div className="fairy-footer" style={{ marginTop: '20px' }}>
-          ✦ <span style={{ color: 'var(--gold-dark)', fontWeight: 700 }}>Revalina</span> — Pixie Dust Journey ✦
-        </div>
-      </main>
+      <div className="fairy-footer" style={{ paddingBottom: '60px' }}>
+        ✦ <span id="footer-name">Revalina</span> — Pixie Dust Journey ✦
+      </div>
 
       <TabBar />
-    </div>
+    </>
   );
 }
 
