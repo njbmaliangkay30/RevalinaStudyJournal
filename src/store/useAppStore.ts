@@ -10,52 +10,22 @@ interface AppActions {
 }
 
 const initialState: AppState = {
-  activeTab: 'dashboard',
-  slides: {},
-  target: 30,
-  name: "",
-  syncCode: "",
-  blockName: "",
-  blokPageId: null,
-  nilaiUjian: 0,
-  blockStart: null,
-  blockEnd: null,
-  milestones: { 25: false, 50: false, 75: false, 100: false },
-  badges: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false },
-  moods: {},
-  focusTime: 0,
-  flashcards: [],
-  matchItems: [],
-  difficultCards: [],
-  matchBestTime: null,
-  fcBestTime: null,
-  theme: 'light',
-  lang: 'id',
-  coins: 0,
-  inventory: { streakFreeze: 0 },
-  pptDots: [],
-  pptMigrated: false,
-  doubleStarExpiry: 0,
+  activeTab: 'dashboard', slides: {}, target: 30, name: "", syncCode: "", blockName: "", blokPageId: null, nilaiUjian: 0,
+  blockStart: null, blockEnd: null, milestones: { 25: false, 50: false, 75: false, 100: false },
+  badges: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false }, moods: {}, focusTime: 0,
+  flashcards: [], matchItems: [], difficultCards: [], matchBestTime: null, fcBestTime: null, theme: 'light', lang: 'id',
+  coins: 0, inventory: { streakFreeze: 0 }, pptDots: [], pptMigrated: false, doubleStarExpiry: 0,
 };
 
 export const useAppStore = create<AppState & AppActions>()(
   persist(
     (set) => ({
       ...initialState,
-
       setActiveTab: (tab) => set({ activeTab: tab }),
-
-      setTheme: (theme) => {
-        document.documentElement.setAttribute('data-theme', theme);
-        set({ theme });
-      },
-
+      setTheme: (theme) => { document.documentElement.setAttribute('data-theme', theme); set({ theme }); },
       setLanguage: (lang) => set({ lang }),
-
       updateData: (partialState) => set((state) => ({ ...state, ...partialState })),
     }),
-    {
-      name: 'rv_storage', // Menyimpan otomatis ke LocalStorage
-    }
+    { name: 'rv_storage' }
   )
 );
