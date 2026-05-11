@@ -52,24 +52,39 @@ export const Header: React.FC = () => {
   const getBorderTheme = () => theme === 'moon' ? 'rgba(138,180,248,0.2)' : theme === 'sakura' ? 'rgba(240,100,160,0.2)' : 'rgba(245,200,66,0.2)';
   const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
 
-  // Injeksi Keyframes untuk Animasi Daun Tertiup Angin & Partikel melayang Naik
+  // Injeksi Keyframes untuk Animasi Daun Lebat, Daun Terbang & Debu Sihir
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
-      @keyframes swayLeaf1 { 0%, 100% { transform: rotate(35deg) translate(0, 0); } 50% { transform: rotate(30deg) translate(-5px, 5px); } }
-      @keyframes swayLeaf2 { 0%, 100% { transform: rotate(-15deg) translate(0, 0); } 50% { transform: rotate(-20deg) translate(5px, 2px); } }
-      @keyframes swayLeaf3 { 0%, 100% { transform: rotate(60deg) translate(0, 0); } 50% { transform: rotate(65deg) translate(3px, -3px); } }
-      @keyframes swayLeaf4 { 0%, 100% { transform: rotate(120deg) translate(0, 0); } 50% { transform: rotate(115deg) translate(-2px, 4px); } }
+      /* Rotasi mengalun di dahan (Goyang alam) */
+      @keyframes swayLeafGentle { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(6deg) scale(1.02); } }
+      @keyframes swayLeafReverse { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-8deg) scale(0.98); } }
       
+      /* Daun yang terlepas & terbawa angin menjauh menyeberangi layar */
+      @keyframes driftAway {
+        0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
+        15% { opacity: 0.6; }
+        85% { opacity: 0.4; }
+        100% { transform: translate(150px, -200px) rotate(45deg) scale(0.6); opacity: 0; }
+      }
+      
+      @keyframes driftAwayReverse {
+        0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
+        15% { opacity: 0.5; }
+        85% { opacity: 0.3; }
+        100% { transform: translate(-200px, -150px) rotate(-60deg) scale(0.5); opacity: 0; }
+      }
+
+      /* Elevasi Pixie Dust */
       @keyframes dustRise {
         0% { transform: translateY(0px) scale(0.5); opacity: 0; }
-        15% { opacity: 0.8; }
-        85% { opacity: 0.5; }
-        100% { transform: translateY(-400px) scale(1.2); opacity: 0; }
+        20% { opacity: 0.9; }
+        80% { opacity: 0.6; }
+        100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
       }
     `;
     document.head.appendChild(style);
-    return () => { document.head.removeChild(style); }; // Cleanup on unmount
+    return () => { document.head.removeChild(style); };
   }, []);
 
   return (
@@ -84,57 +99,75 @@ export const Header: React.FC = () => {
         boxShadow: '0 4px 25px rgba(10, 30, 5, 0.4)' 
       }}
     >
-      {/* 🌟 1. NAPAS HUTAN (Ambient Breathing Glow) DI PALING BELAKANG */}
+      {/* 🌟 1. CAHAYA SINEMATIK: DIPOSISIKAN PRESISI DI KIRI-ATAS DAN KANAN-BAWAH */}
       <motion.div 
-        animate={{ opacity: [0.15, 0.45, 0.15], scale: [0.95, 1.05, 0.95] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.05, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          position: 'absolute', top: '10%', left: '5%', width: '90%', height: '80%',
+          position: 'absolute', top: '-25%', left: '-10%', width: '70%', height: '80%',
           background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`,
+          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0
+        }}
+      />
+      <motion.div 
+        animate={{ opacity: [0.05, 0.25, 0.05], scale: [0.95, 1.1, 0.95] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        style={{
+          position: 'absolute', bottom: '-20%', right: '-5%', width: '80%', height: '70%',
+          background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
           pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0
         }}
       />
 
-      {/* ✨ 2. PIXIE DUST MENYALA DARI BAWAH KE ATAS */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
-        {Array.from({ length: 45 }).map((_, i) => {
-          const size = Math.random() * 5 + 3; // Ukuran diperbesar 3-8px
-          const leftPos = Math.random() * 100;
-          const dur = Math.random() * 6 + 5; // 5-11 detik
-          const del = Math.random() * 5; // Jeda sebelum muncul
-          const color = Math.random() > 0.6 ? '#fff' : glowColor;
+      {/* 🍃 2. DAUN TINKERBELL DIPERLEBAT & DIPERCANTIK (Dengan Outlline Emas Halus) */}
+      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+        
+        {/* Layer Bawah (Blured/Kabur kedalaman Hutan) */}
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '150px', height: '100px', top: '-15px', right: '-40px', transform: 'rotate(25deg)', filter: 'blur(3px)', animation: 'swayLeafGentle 10s infinite alternate ease-in-out' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '90px', height: '60px', top: '50px', left: '-20px', transform: 'rotate(50deg)', filter: 'blur(4px)', animation: 'swayLeafReverse 12s infinite alternate ease-in-out' }}></div>
 
+        {/* Layer Utama Asli (Glow emas tipis ditambahkan di border/box-shadow) */}
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.15)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.1)', width: '120px', height: '80px', top: '-20px', right: '-25px', transform: 'rotate(35deg)', transformOrigin: 'top right', animation: 'swayLeafGentle 8s infinite ease-in-out' }}></div>
+        
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.2)', boxShadow: 'inset 0 0 8px rgba(245,200,66,0.2), 0 0 4px rgba(245,200,66,0.08)', border: '1px solid rgba(245,200,66,0.12)', width: '80px', height: '50px', bottom: '-10px', right: '25%', transform: 'rotate(-15deg)', transformOrigin: 'bottom right', animation: 'swayLeafReverse 7s infinite ease-in-out' }}></div>
+        
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.18)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.15)', width: '70px', height: '45px', top: '30px', left: '-15px', transform: 'rotate(60deg)', transformOrigin: 'left center', animation: 'swayLeafGentle 9s infinite ease-in-out' }}></div>
+        
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.15)', boxShadow: 'inset 0 0 12px rgba(255,255,255,0.2), 0 0 8px rgba(245,200,66,0.3)', border: '1px solid rgba(245,200,66,0.25)', width: '40px', height: '25px', top: '10px', right: '40%', transform: 'rotate(120deg)', transformOrigin: 'top left', animation: 'swayLeafReverse 6s infinite ease-in-out' }}></div>
+        
+        {/* 🍃 Daun yang Terbang Tertiup Angin */}
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.12)', border: '1px solid rgba(245,200,66,0.15)', width: '30px', height: '18px', bottom: '20px', left: '20%', animation: 'driftAwayReverse 15s infinite ease-in-out', animationDelay: '2s' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.12)', border: '1px solid rgba(141,201,90,0.1)', width: '45px', height: '30px', top: '40%', right: '10%', animation: 'driftAway 18s infinite ease-in-out', animationDelay: '6s' }}></div>
+
+      </div>
+      
+      {/* ✨ 3. SISTEM PARTIKEL DEBU PERI LEBIH PADAT */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
+        {Array.from({ length: 60 }).map((_, i) => {
+          const size = Math.random() * 4 + 2; 
+          const color = Math.random() > 0.4 ? '#fff' : glowColor;
           return (
             <div 
               key={i}
               style={{
                 position: 'absolute',
-                bottom: '-20px', // Mulai di bawah kotak header
-                left: `${leftPos}%`,
+                bottom: `-${Math.random() * 50}px`, // Tersebar start nya
+                left: `${Math.random() * 100}%`,
                 width: `${size}px`, height: `${size}px`,
                 backgroundColor: color,
                 borderRadius: '50%',
-                boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size * 3}px rgba(255,255,255,0.8)`,
-                animation: `dustRise ${dur}s infinite linear`,
-                animationDelay: `${del}s`,
-                opacity: 0 // Awalnya tak terlihat sebelum keyframes ambil alih
+                boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`,
+                animation: `dustRise ${Math.random() * 7 + 4}s infinite linear`,
+                animationDelay: `${Math.random() * 6}s`,
+                opacity: 0,
+                filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)` // Beberapa partikel sengaja kabur (efek bokeh)
               }}
             />
           );
         })}
       </div>
-      
-      {/* 🍃 3. DAUN TERTIUP ANGIN HALUS (Murni Posisi Asli + Keyframe Sway) */}
-      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '120px', height: '80px', top: '-20px', right: '-25px', animation: 'swayLeaf1 8s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '80px', height: '50px', bottom: '-10px', right: '25%', animation: 'swayLeaf2 7s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '70px', height: '45px', top: '30px', left: '-15px', animation: 'swayLeaf3 9s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245, 200, 66, 0.08)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '40px', height: '25px', top: '10px', right: '40%', animation: 'swayLeaf4 6s infinite ease-in-out' }}></div>
-      </div>
-      
 
       {/* --- KONTEN TEKS DAN KOMPONEN BERADA DI Z-INDEX TERTINGGI (10) --- */}
-
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
         <div style={{ fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontWeight: 700, textShadow: '0 0 8px rgba(255,255,255,0.3)' }}>
           {t('hdr_eyebrow')}
