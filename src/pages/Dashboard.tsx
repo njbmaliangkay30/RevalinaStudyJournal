@@ -1,54 +1,58 @@
 import React, { useMemo } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { useTranslation } from '../lib/i18n';
-import { Hourglass, BookOpen, Target, Flame, Trophy } from 'lucide-react';
+import { Hourglass, BookOpen, Target, Flame, Trophy, Clock, Medal, Crown } from 'lucide-react';
 
-// --- KOMPONEN BANTUAN UNTUK KARTU MODERN ---
-// Ini memastikan semua kartu desainnya konsisten, elegan, dan rapi
+// --- KOMPONEN BANTUAN UNTUK KARTU KACA PERI (FAIRY GLASS CARD) ---
 interface CardProps {
   title: string;
   value: React.ReactNode;
   subtitle: string;
   icon: React.ElementType;
-  iconColorClass: string; // untuk efek aura CSS lama Anda
+  gradientClass: string; 
   isHalf?: boolean;
 }
 
-const ModernCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Icon, iconColorClass, isHalf }) => (
+const FairyGlassCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Icon, gradientClass, isHalf }) => (
   <div 
-    className={`relative overflow-hidden rounded-[20px] p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+    className={`group relative overflow-hidden rounded-[24px] p-5 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${
       isHalf ? 'col-span-1' : 'col-span-2'
     }`}
     style={{
       backgroundColor: 'var(--bg-card)',
       border: '1px solid var(--border-card)',
-      boxShadow: '0 8px 30px rgba(0,0,0,0.04)'
+      // Efek bayangan ganda: luar untuk kedalaman, dalam untuk efek kaca
+      boxShadow: '0 8px 32px rgba(0,0,0,0.03), inset 0 2px 0 rgba(255,255,255,0.4)'
     }}
   >
-    {/* Header Kartu: Ikon & Judul */}
-    <div className="flex items-center gap-3 mb-3">
-      <div className={`p-2 rounded-2xl bg-white/40 dark:bg-black/20 ${iconColorClass}`}>
-        <Icon size={isHalf ? 18 : 22} strokeWidth={2.5} style={{ color: 'var(--text-mid)' }} />
+    {/* Bias Cahaya (Glow) Tersembunyi yang muncul saat hover */}
+    <div className={`absolute -inset-2 opacity-0 group-hover:opacity-20 transition-opacity duration-700 blur-2xl rounded-full bg-gradient-to-br ${gradientClass} pointer-events-none`} />
+
+    {/* Header Kartu: Ikon Bergradasi & Judul */}
+    <div className="flex items-center gap-3 mb-4 relative z-10">
+      <div 
+        className={`flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br ${gradientClass} shadow-inner`}
+      >
+        <Icon size={20} strokeWidth={2.5} className="text-white drop-shadow-sm" />
       </div>
       <h3 
-        className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]"
+        className="text-[10px] font-bold uppercase tracking-[0.2em]"
         style={{ color: 'var(--text-soft)' }}
       >
         {title}
       </h3>
     </div>
 
-    {/* Isi Kartu: Angka Besar & Subtitle */}
-    <div className="flex flex-col">
+    {/* Isi Kartu */}
+    <div className="flex flex-col relative z-10">
       <div 
-        className={`${isHalf ? 'text-3xl' : 'text-4xl'} font-extrabold font-sans leading-none flex items-baseline gap-1`}
-        style={{ color: 'var(--text-dark)', textShadow: '0 0 15px rgba(245,200,66,0.1)' }}
+        className={`${isHalf ? 'text-[28px]' : 'text-[34px]'} font-extrabold font-sans leading-none tracking-tight flex items-baseline gap-1 bg-clip-text text-transparent bg-gradient-to-br from-[var(--text-dark)] to-[var(--text-mid)]`}
       >
         {value}
       </div>
       <div 
-        className="text-[11px] font-semibold mt-1.5 leading-snug"
-        style={{ color: 'var(--text-mid)' }}
+        className="text-[11px] font-medium mt-2 tracking-wide"
+        style={{ color: 'var(--text-soft)' }}
       >
         {subtitle}
       </div>
@@ -64,7 +68,7 @@ export const Dashboard: React.FC = () => {
   const doneCount = pptDots.filter(d => d.done).length;
 
   const examInfo = useMemo(() => {
-    if (!blockEnd) return { val: "-", lbl: t('lbl_not_set'), iconClass: "", pacingVal: "-", pacingLbl: "PPT / hari" };
+    if (!blockEnd) return { val: "-", lbl: t('lbl_not_set'), gradientClass: "from-gray-400 to-gray-500", pacingVal: "-", pacingLbl: "PPT / hari" };
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -78,24 +82,24 @@ export const Dashboard: React.FC = () => {
       return {
         val: `${diffDays} ${t('lbl_day')}`,
         lbl: t('lbl_until_exam'),
-        iconClass: diffDays > 7 ? "aura-blue" : diffDays > 3 ? "aura-amber" : "aura-red",
-        pacingVal: sisaSlide > 0 ? Math.ceil(sisaSlide / diffDays).toString() : "Done!",
+        gradientClass: diffDays > 7 ? "from-[#8ab4f8] to-[#3a5fc0]" : diffDays > 3 ? "from-[#f5c842] to-[#e8a020]" : "from-[#ff8a8a] to-[#e85050]",
+        pacingVal: sisaSlide > 0 ? Math.ceil(sisaSlide / diffDays).toString() : "Selesai",
         pacingLbl: sisaSlide > 0 ? t('lbl_ppt_day') : "Kerja luar biasa!"
       };
     } else if (diffDays === 0) {
       return {
         val: t('lbl_today'),
         lbl: t('lbl_show_wings'),
-        iconClass: "aura-red",
-        pacingVal: sisaSlide > 0 ? sisaSlide.toString() : "Done!",
+        gradientClass: "from-[#ff8a8a] to-[#e85050]",
+        pacingVal: sisaSlide > 0 ? sisaSlide.toString() : "Selesai",
         pacingLbl: sisaSlide > 0 ? t('lbl_ppt_more') : "Siap ujian!"
       };
     } else {
       return {
         val: t('lbl_over'),
         lbl: t('lbl_exam_passed'),
-        iconClass: "aura-blue",
-        pacingVal: "Done!",
+        gradientClass: "from-[#8ab4f8] to-[#3a5fc0]",
+        pacingVal: "Selesai",
         pacingLbl: "Misi selesai."
       };
     }
@@ -123,89 +127,93 @@ export const Dashboard: React.FC = () => {
       }
     }
 
-    let iconClass = "";
+    let gradientClass = "";
     let subTxt = "";
-    if (streak >= 5) { iconClass = "aura-fire"; subTxt = t('lbl_streak_fire'); }
-    else if (streak >= 3) { iconClass = "aura-amber"; subTxt = t('lbl_streak_amber'); }
-    else if (streak > 0) { iconClass = "aura-blue"; subTxt = t('lbl_streak_blue'); }
-    else { iconClass = ""; subTxt = t('lbl_streak_none'); }
+    if (streak >= 5) { gradientClass = "from-[#ff7e5f] to-[#feb47b]"; subTxt = t('lbl_streak_fire'); }
+    else if (streak >= 3) { gradientClass = "from-[#f5c842] to-[#e8a020]"; subTxt = t('lbl_streak_amber'); }
+    else if (streak > 0) { gradientClass = "from-[#8ab4f8] to-[#3a5fc0]"; subTxt = t('lbl_streak_blue'); }
+    else { gradientClass = "from-gray-400 to-gray-500"; subTxt = t('lbl_streak_none'); }
 
-    return { streak, iconClass, subTxt };
+    return { streak, gradientClass, subTxt };
   }, [slides, t]);
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Grid CSS untuk mengatur tata letak kartu modern */}
-      <div className="grid grid-cols-2 gap-3.5">
+      {/* Grid Utama (Gaya iOS Modern) */}
+      <div className="grid grid-cols-2 gap-4">
         
-        <ModernCard 
+        <FairyGlassCard 
           title={t('db_exam_lbl')}
           value={examInfo.val}
           subtitle={examInfo.lbl}
           icon={Hourglass}
-          iconColorClass={examInfo.iconClass}
+          gradientClass={examInfo.iconClass || examInfo.gradientClass}
           isHalf={false}
         />
 
-        <ModernCard 
+        <FairyGlassCard 
           title={t('db_read_lbl')}
           value={doneCount}
           subtitle={`${t('db_read_tgt')} ${target}`}
           icon={BookOpen}
-          iconColorClass="aura-gold"
+          gradientClass="from-[#f5c842] to-[#b8900a]"
           isHalf={true}
         />
 
-        <ModernCard 
+        <FairyGlassCard 
           title={t('db_daily_lbl')}
           value={examInfo.pacingVal}
           subtitle={examInfo.pacingLbl}
           icon={Target}
-          iconColorClass="aura-green"
+          gradientClass="from-[#8dc95a] to-[#2e6b1a]"
           isHalf={true}
         />
 
-        <ModernCard 
+        <FairyGlassCard 
           title={t('db_streak_lbl')}
           value={
             <>
               {streakInfo.streak} 
-              <span className="text-xl ml-1" style={{ color: 'var(--amber)' }}>
+              <span className="text-xl ml-1 bg-clip-text text-transparent bg-gradient-to-r from-[var(--amber)] to-[var(--gold-dark)]">
                 {t('db_streak_day')}
               </span>
             </>
           }
           subtitle={streakInfo.subTxt}
           icon={Flame}
-          iconColorClass={streakInfo.iconClass}
+          gradientClass={streakInfo.gradientClass}
           isHalf={false}
         />
       </div>
 
-      {/* Bagian Riwayat (History) - Diberi sentuhan UI modern */}
-      <div className="mt-2">
-        <div className="flex items-center gap-2 mb-3">
-          <Trophy size={16} style={{ color: 'var(--text-soft)' }} />
-          <h2 className="text-[10px] font-bold tracking-widest uppercase" style={{ color: 'var(--text-soft)' }}>
+      {/* Leaderboard Section - Desain Kaca Mewah */}
+      <div className="mt-4">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-1.5 rounded-lg bg-[var(--gold-pale)] border border-[var(--gold-light)] shadow-sm">
+            <Trophy size={16} className="text-[var(--gold-dark)]" />
+          </div>
+          <h2 className="text-[11px] font-bold tracking-[0.2em] uppercase text-[var(--text-soft)]">
             {t('lb_title')}
           </h2>
-          <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-card)] to-transparent ml-2"></div>
+          <div className="flex-1 h-px bg-gradient-to-r from-[var(--gold-light)] to-transparent opacity-50 ml-2"></div>
         </div>
         
-        <div className="flex gap-2 bg-[var(--bg-tab)] p-1 rounded-[14px] mb-3 border border-[var(--border-card)]/50">
-          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl bg-[var(--bg-card-solid)] text-[var(--text-dark)] shadow-sm transition-all">
-            🕐 {t('lb_tab_recent')}
+        <div className="flex gap-2 p-1.5 rounded-[16px] mb-4 backdrop-blur-md bg-[var(--bg-tab)] border border-[var(--border-card)]">
+          <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] bg-white text-[var(--text-dark)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all">
+            <Clock size={14} className="text-[var(--text-mid)]" /> {t('lb_tab_recent')}
           </button>
-          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl text-[var(--text-soft)] hover:bg-white/10 transition-all">
-            🏆 {t('lb_tab_best')}
+          <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] text-[var(--text-soft)] hover:bg-white/40 transition-all">
+            <Medal size={14} /> {t('lb_tab_best')}
           </button>
-          <button className="flex-1 py-1.5 text-[11px] font-bold rounded-xl text-[var(--text-soft)] hover:bg-white/10 transition-all">
-            ✦ {t('lb_tab_podium')}
+          <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] text-[var(--text-soft)] hover:bg-white/40 transition-all">
+            <Crown size={14} /> {t('lb_tab_podium')}
           </button>
         </div>
 
-        <div className="min-h-[60px] flex items-center justify-center rounded-2xl border border-dashed border-[var(--border-card)] bg-[var(--bg-input)]">
-          <span className="text-[11px] font-medium text-[var(--text-soft)]">{t('lb_no_notion')}</span>
+        <div className="min-h-[80px] flex items-center justify-center rounded-[20px] border border-dashed border-[var(--border-card)] bg-[var(--bg-input)] backdrop-blur-sm">
+          <span className="text-[11px] font-semibold tracking-wide text-[var(--text-soft)] flex items-center gap-2">
+            <Sparkles size={14} /> {t('lb_no_notion')}
+          </span>
         </div>
       </div>
     </div>
