@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { Home, BookOpen, Sparkles, Settings } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
@@ -9,18 +9,15 @@ export const TabBar: React.FC = () => {
   const { t } = useTranslation();
   const { activeTab, setActiveTab } = useAppStore();
   
-  // State untuk mengontrol apakah menu harus disembunyikan
   const [isHidden, setIsHidden] = useState(false);
   const { scrollY } = useScroll();
 
-  // Logika mendeteksi arah scroll
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  // Menambahkan ": number" pada latest agar TypeScript tidak protes
+  useMotionValueEvent(scrollY, "change", (latest: number) => {
     const previous = scrollY.getPrevious() ?? 0;
-    // Jika scroll ke bawah lebih dari 50px, sembunyikan menu
     if (latest > previous && latest > 50) {
       setIsHidden(true);
     } 
-    // Jika scroll ke atas, munculkan kembali menu
     else if (latest < previous) {
       setIsHidden(false);
     }
@@ -34,10 +31,8 @@ export const TabBar: React.FC = () => {
   ];
 
   return (
-    // Membungkus nav dengan motion.nav agar bisa dianimasikan naik-turun
     <motion.nav 
       className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2"
-      // Animasi geser ke bawah sejauh 100% jika isHidden true, kembali ke 0 jika false
       variants={{
         visible: { y: 0, opacity: 1 },
         hidden: { y: "100%", opacity: 0 }
