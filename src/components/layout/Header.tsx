@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n';
 
-// Daftar Quote Sihir Original Anda
 const MAGIC_QUOTES = [
   "Semua keajaiban butuh sedikit waktu dan banyak usaha.",
   "Satu halaman lagi, satu kepakan sayap lebih tinggi.",
@@ -22,30 +21,22 @@ export const Header: React.FC = () => {
 
   const [quote, setQuote] = useState("");
 
-  // Set Quote Acak Saat Render
   useEffect(() => {
     setQuote(MAGIC_QUOTES[Math.floor(Math.random() * MAGIC_QUOTES.length)]);
   }, []);
 
-  // Hitung Progress
   const doneCount = pptDots.filter(d => d.done).length;
   const progressPct = target > 0 ? Math.min(Math.round((doneCount / target) * 100), 100) : 0;
   const circ = 213.6;
   const strokeOffset = circ - (circ * progressPct) / 100;
 
-  // Teks Sapaan Berdasarkan Waktu
   const greeting = useMemo(() => {
     const h = new Date().getHours();
     if (lang === 'id') return h < 11 ? "Semangat mengawali harimu!" : h < 15 ? "Mari terus kepakkan sayapmu!" : h < 18 ? "Sore yang tenang untuk menyerap ilmu!" : "Waktunya merapikan perlengkapan ajaibmu!";
     return h < 11 ? "Have a magical morning!" : h < 15 ? "Keep flapping those wings!" : h < 18 ? "A peaceful evening to learn!" : "Time to rest your magic!";
   }, [lang]);
 
-  // Rank & Badge
-  let rankStr = "🌱 Peri Pemula";
-  if (progressPct >= 100) rankStr = "👑 Ratu Pixie";
-  else if (progressPct >= 75) rankStr = "🌿 Peri Penjaga";
-  else if (progressPct >= 50) rankStr = "✨ Peri Cahaya";
-  else if (progressPct >= 25) rankStr = "🔨 Peri Pekerja";
+  let rankStr = progressPct >= 100 ? "👑 Ratu Pixie" : progressPct >= 75 ? "🌿 Peri Penjaga" : progressPct >= 50 ? "✨ Peri Cahaya" : "🌱 Peri Pemula";
 
   let blockLabel = "Memuat data...";
   if (blockStart && blockEnd) {
@@ -54,7 +45,6 @@ export const Header: React.FC = () => {
     blockLabel = `${s} – ${e}`;
   }
 
-  // Menjalankan Partikel Sparkle dari CSS Original
   useEffect(() => {
     const wrap = document.getElementById("sparkles");
     if (!wrap) return;
@@ -66,7 +56,6 @@ export const Header: React.FC = () => {
       sp.style.height=sp.style.width;
       sp.style.left=Math.random()*100+"%"; 
       sp.style.bottom=(Math.random()*-20)+"px";
-      
       if (theme === 'moon') {
         const moonColors = ["#8ab4f8","#c3d6fe","#a78bfa","#c4b5fd","#e0e8ff"];
         sp.style.background = moonColors[Math.floor(Math.random()*moonColors.length)];
@@ -85,11 +74,9 @@ export const Header: React.FC = () => {
     }
   }, [theme]);
 
-  // KELAS CSS "header" ADALAH KUNCI KESAMAAN DENGAN GAMBAR ANDA (Diarahkan ke index.css)
   return (
     <div className="header">
       
-      {/* Ornamen Daun (Diatur posisinya oleh CSS asli) */}
       <div className="header-leaves">
         <div className="leaf leaf1"></div>
         <div className="leaf leaf2"></div>
@@ -97,23 +84,22 @@ export const Header: React.FC = () => {
         <div className="leaf leaf4"></div>
       </div>
       
-      {/* Teks Ujung Atas & Koin */}
-      <div className="header-top-row relative z-10">
+      <div className="header-top-row">
         <div className="header-eyebrow">
           <span>{t('hdr_eyebrow')}</span>
         </div>
         <motion.div 
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }}
-          className="coin-badge cursor-pointer"
+          className="coin-badge" 
+          style={{ cursor: "pointer" }}
         >
-          <span className="text-[12px] animate-pulse drop-shadow-[0_0_8px_rgba(245,200,66,0.6)]">✨</span> 
+          <span style={{ fontSize: "14px", marginRight: "2px" }} className="animate-pulse drop-shadow-md">✨</span> 
           <span>{coins}</span>
         </motion.div>
       </div>
 
-      {/* Nama & Lencana Rank */}
-      <div className="header-name relative z-10">
+      <div className="header-name">
         <span className="name-text">
           {name || "Peri Kecil"},
         </span>
@@ -122,8 +108,7 @@ export const Header: React.FC = () => {
         </span>
       </div>
       
-      {/* Sapaan (Kiri) & Quote (Kanan) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '-4px' }} className="relative z-10">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '-4px', position: 'relative', zIndex: 1 }}>
         <div>
           <div className="header-name" style={{ fontSize: '24px', marginTop: '4px', marginBottom: '2px' }}>
             <span className="name-text">{greeting}</span>
@@ -132,26 +117,25 @@ export const Header: React.FC = () => {
             {new Date().toLocaleDateString(lang === 'id' ? "id-ID" : "en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
-        <div style={{ fontFamily: 'var(--serif)', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, opacity: 0.95, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}>
+        <div id="quote-txt" style={{ fontFamily: 'var(--serif)', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, opacity: 0.95, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}>
           ❝ {quote} ❞
         </div>
       </div>
 
-      {/* Box Lingkaran Progress & Garis Membentang ke Kanan */}
-      <div className="prog-wrap relative z-10 mt-2">
+      <div className="prog-wrap">
         <div className="ring-outer">
           <svg width="80" height="80" viewBox="0 0 80 80">
             <defs>
               <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={theme === 'moon' ? '#3a5fc0' : theme === 'sakura' ? '#b02860' : '#B8900A'} />
-                <stop offset="60%" stopColor={theme === 'moon' ? '#8ab4f8' : theme === 'sakura' ? '#e87080' : '#F5C842'} />
-                <stop offset="100%" stopColor={theme === 'moon' ? '#c3d6fe' : theme === 'sakura' ? '#ffc0d0' : '#FFE478'} />
+                <stop offset="0%" stopColor="#B8900A" />
+                <stop offset="60%" stopColor="#F5C842" />
+                <stop offset="100%" stopColor="#FFE478" />
               </linearGradient>
             </defs>
             <circle className="ring-bg" cx="40" cy="40" r="34" />
             <circle className="ring-track" cx="40" cy="40" r="34" />
-            <circle className="ring-glow" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)' }} />
-            <circle className="ring-fill" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)' }} />
+            <circle className="ring-glow" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset }} />
+            <circle className="ring-fill" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset }} />
           </svg>
           <div className="ring-center">
             <div className="ring-pct">{progressPct}%</div>
@@ -159,23 +143,21 @@ export const Header: React.FC = () => {
           </div>
         </div>
         
-        <div className="prog-info flex-1 pl-2">
+        <div className="prog-info">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '7px' }}>
             <div className="prog-label" style={{ marginBottom: 0 }}>{t('prog_total_lbl')}</div>
-            <div className="date-badge">✦ {blockLabel}</div>
+            <div className="date-badge">
+              {blockLabel}
+            </div>
           </div>
           <div className="prog-bar-track">
-            <div className="prog-bar-fill" style={{ width: `${progressPct}%`, transition: 'width 1.2s cubic-bezier(.4,0,.2,1)' }}></div>
+            <div className="prog-bar-fill" style={{ width: `${progressPct}%` }}></div>
           </div>
-          <div className="prog-nums" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div className="prog-nums">
             <span><strong>{doneCount}</strong> {t('prog_done_lbl')}</span>
             <span>{t('prog_target_lbl')} <strong>{target}</strong></span>
           </div>
         </div>
       </div>
       
-      {/* Elemen partikel jatuh / sparkles */}
       <div className="sparkles" id="sparkles"></div>
-    </div>
-  );
-};
