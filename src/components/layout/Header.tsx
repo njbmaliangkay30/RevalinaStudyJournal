@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n';
@@ -9,165 +9,221 @@ export const Header: React.FC = () => {
 
   const doneCount = pptDots.filter(d => d.done).length;
   const progressPct = target > 0 ? Math.min(Math.round((doneCount / target) * 100), 100) : 0;
-  
-  // Logic Rank
+  const circ = 251.2; // 2 * PI * r (R=40 untuk ring yang lebih besar & presisi)
+  const strokeOffset = circ - (circ * progressPct) / 100;
+
+  // Level Keajaiban Peri
   let rankStr = progressPct >= 100 ? "Ratu Pixie" : progressPct >= 75 ? "Peri Penjaga" : progressPct >= 50 ? "Peri Cahaya" : "Peri Pemula";
 
-  // Kalender Halus
-  let blockLabel = "Menunggu Misi...";
+  let blockLabel = "Menunggu Misi";
   if (blockStart && blockEnd) {
-    const s = new Date(blockStart).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-    const e = new Date(blockEnd).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-    blockLabel = `${s} ~ ${e}`;
+    const s = new Date(blockStart).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    const e = new Date(blockEnd).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    blockLabel = `${s} - ${e}`;
   }
 
-  // Efek Warna Tema Latar (Soft Ethereal Colors ala Tinkerbell)
-  const getBackgroundColors = () => {
-    switch(theme) {
-      case 'moon':   return { from: '#0f172a', to: '#1e1b4b', accent: '#8ab4f8' };
-      case 'sakura': return { from: '#4a1128', to: '#831843', accent: '#f090a0' };
-      case 'dark':   return { from: '#062f22', to: '#064e3b', accent: '#f5c842' };
-      default:       return { from: '#1a4124', to: '#2c5d33', accent: '#f8d962' }; // Morning Forest Green
-    }
+  // Mengatur warna nyawa berdasar tema
+  const themeColors = {
+    moon: { base: '#0b132b', top: '#172554', glow: '#60a5fa' },
+    sakura: { base: '#2b0b13', top: '#500724', glow: '#fb7185' },
+    dark: { base: '#021a11', top: '#064e3b', glow: '#fcd34d' },
+    light: { base: '#14532d', top: '#065f46', glow: '#fcd34d' }
   };
-  const themeColors = getBackgroundColors();
+  const activeColor = themeColors[theme] || themeColors.light;
+
+  useEffect(() => {
+    // Generate Debu Peri interaktif di Latar
+    const wrap = document.getElementById("sparkles");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    for (let i = 0; i < 40; i++) {
+      const sp = document.createElement("div"); 
+      const size = Math.random() * 3 + 1;
+      sp.style.cssText = `
+        position: absolute;
+        width: ${size}px; height: ${size}px;
+        background: ${activeColor.glow};
+        box-shadow: 0 0 ${size*2}px ${activeColor.glow}, 0 0 ${size*4}px #fff;
+        border-radius: 50%;
+        left: ${Math.random() * 100}%; bottom: -10%;
+        opacity: ${Math.random() * 0.7 + 0.3};
+        animation: floatUp ${4 + Math.random() * 8}s linear infinite;
+        animation-delay: ${Math.random() * 5}s;
+      `;
+      // Tambah css sementara via id agar bisa ditimpa
+      const styleTag = document.createElement("style");
+      styleTag.innerHTML = `
+        @keyframes floatUp {
+          0% { transform: translateY(0) scale(0.5); opacity: 0; }
+          50% { opacity: ${Math.random() * 0.8 + 0.2}; transform: translateY(-${100 + Math.random() * 100}px) scale(1); }
+          100% { transform: translateY(-${250 + Math.random() * 100}px) scale(0.2); opacity: 0; }
+        }
+      `;
+      wrap.appendChild(styleTag);
+      wrap.appendChild(sp);
+    }
+  }, [theme]);
 
   return (
     <div 
-      className="relative px-6 pt-10 pb-8 rounded-b-[40px] z-10 overflow-hidden flex flex-col justify-between"
+      className="relative px-6 pt-10 pb-8 rounded-b-[40px] z-10 overflow-hidden"
       style={{ 
-        minHeight: '270px',
-        background: `linear-gradient(145deg, ${themeColors.from} 0%, ${themeColors.to} 100%)`,
-        boxShadow: `0 15px 45px -10px ${themeColors.from}66` // Bayangan berwarna lembut
+        background: `linear-gradient(170deg, ${activeColor.top} 0%, ${activeColor.base} 100%)`,
+        boxShadow: `0 12px 35px -5px ${activeColor.base}80` 
       }}
     >
-      {/* =========================================
-          BACKGROUND ART (Ethereal Tinkerbell Vibes)
-          ========================================= */}
       
-      {/* Glow lembut di pojok atas */}
-      <div 
-        className="absolute -top-[20%] -left-[10%] w-[80%] h-[80%] rounded-full blur-[70px] mix-blend-screen opacity-50"
-        style={{ backgroundColor: themeColors.accent }}
-      ></div>
+      {/* 🌟 NAFAS MAGIS DI BACKGROUND (BREATHING AURA) */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.15, 0.3, 0.15]
+        }}
+        transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
+        className="absolute -top-[10%] left-[20%] w-[150%] h-[150%] rounded-full blur-[90px] mix-blend-screen pointer-events-none"
+        style={{ backgroundColor: activeColor.glow }}
+      />
+      
+      {/* Wadah Sparkles */}
+      <div id="sparkles" className="absolute inset-0 pointer-events-none mix-blend-screen" />
 
-      {/* Dekorasi Vektor Sulur Ajaib Melengkung */}
-      <svg className="absolute bottom-0 right-0 w-[60%] h-[120%] opacity-20 pointer-events-none text-white drop-shadow-[0_0_10px_white]" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M 50,120 Q 80,80 120,40" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" />
-        <path d="M 30,120 Q 70,60 120,10" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" strokeLinecap="round" />
-        <path d="M 85,55 Q 100,50 110,65 Q 95,70 85,55 Z" fill="currentColor" opacity="0.8" />
-        <path d="M 95,25 Q 115,20 120,35 Q 105,40 95,25 Z" fill="currentColor" opacity="0.6" />
-        {/* Titik serbuk peri (Pollen) */}
-        <circle cx="85" cy="45" r="1.5" fill="currentColor" />
-        <circle cx="100" cy="15" r="1" fill="currentColor" />
-        <circle cx="70" cy="65" r="2" fill="currentColor" />
+      {/* Tali Gelombang Abstrak ala Portal Kaca */}
+      <svg className="absolute bottom-0 right-0 w-[65%] h-[80%] opacity-[0.07] pointer-events-none drop-shadow-[0_0_15px_#fff]" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M 0,100 C 40,70 60,90 100,40 L 100,100 Z" fill={activeColor.glow} />
+        <path d="M 30,100 C 50,60 80,70 100,20 L 100,100 Z" fill={activeColor.glow} />
       </svg>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-main)]/10 to-transparent pointer-events-none" />
 
       {/* =========================================
-          BARIS ATAS: Logo & Koin (Simfoni Minimalis)
+          BARIS 1: NAMA APLIKASI & SALDO KOIN
           ========================================= */}
-      <div className="flex justify-between items-center relative z-10 w-full mb-6">
-        <div className="flex items-center gap-2">
-          <SparkleIcon color={themeColors.accent} />
-          <span className="text-[10px] tracking-[0.2em] font-medium text-white/70 uppercase">
-            Pixie Journal
-          </span>
-        </div>
-        
-        {/* Lencana koin sekarang lebih bulat dan memudar seperti gelembung embun */}
-        <motion.button 
-          whileHover={{ scale: 1.05 }} 
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-inner"
+      <div className="flex justify-between items-center relative z-10 mb-7">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 backdrop-blur-md bg-white/5 border border-white/10 px-3 py-1 rounded-full shadow-[inset_0_1px_3px_rgba(255,255,255,0.2)]"
         >
-          <span className="text-sm">✨</span>
-          <span className="text-xs font-bold text-white drop-shadow-sm">{coins}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold-light)] animate-pulse shadow-[0_0_8px_var(--gold-light)]"></span>
+          <span className="text-[10px] tracking-[0.2em] font-bold text-white/70 uppercase">
+            Pixie Hollow
+          </span>
+        </motion.div>
+        
+        <motion.button 
+          whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-white/20 bg-black/20 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.2),inset_0_2px_5px_rgba(255,255,255,0.15)] group"
+        >
+          <span className="text-[14px] drop-shadow-[0_0_5px_#fcd34d] group-hover:animate-spin">✨</span>
+          <span className="text-sm font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{coins}</span>
         </motion.button>
       </div>
 
+
       {/* =========================================
-          AREA TENGAH: Nama Elegan & Kutipan Minimalis
+          BARIS 2: IDENTITAS PERI & ORBIT
           ========================================= */}
-      <div className="flex items-end justify-between relative z-10 flex-grow mb-6">
-        
-        {/* Sisi Kiri: Sapaan */}
-        <div className="flex flex-col gap-1.5 w-[65%]">
-          <div className="inline-flex items-center w-fit border border-white/15 px-2.5 py-0.5 rounded-full bg-white/5 backdrop-blur-sm">
-            <span className="text-[9px] font-bold text-white/80 uppercase tracking-widest">{rankStr}</span>
-          </div>
+      <div className="flex justify-between items-center relative z-10 mb-8 mt-2">
+        <div className="flex flex-col gap-1 w-2/3">
           
-          <h1 className="font-serif text-[34px] leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.15)] mt-1">
+          <h1 
+             className="text-[38px] leading-tight text-transparent bg-clip-text drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] italic tracking-tight"
+             // DI SINI LETAK FONT MAGIS Cormorant Garamond 
+             style={{ 
+               fontFamily: "'Cormorant Garamond', 'Alice', serif", 
+               backgroundImage: 'linear-gradient(to bottom, #ffffff 30%, #fef08a 100%)',
+               fontWeight: 600
+             }}
+          >
             {name || "Peri Kecil"},
           </h1>
-          <span className="text-white/60 font-sans text-[11px] font-medium tracking-wide mt-1">
-            Siap merangkai mantra baru hari ini?
-          </span>
+          
+          <p className="text-[12px] font-sans font-medium text-white/60 tracking-wide mt-1">
+             <span className="text-[var(--gold-light)]">✧</span> Sesuatu yang magis menantimu.
+          </p>
+
+          <div className="inline-flex mt-2 w-fit px-3 py-1 rounded-full bg-gradient-to-r from-black/40 to-transparent border-l border-white/20">
+            <span className="text-[9px] font-bold text-white/90 uppercase tracking-widest">{rankStr}</span>
+          </div>
+
         </div>
 
-        {/* Sisi Kanan: Ruang untuk ilustrasi peri atau quote minimalis (Transparan) */}
-        <div className="w-[35%] flex justify-end">
-           <div className="text-right">
-             <div className="text-[28px] leading-none drop-shadow-md">
-               🧚🏼‍♀️
-             </div>
-           </div>
-        </div>
+        {/* =========================================
+            AREA KANAN: RING ORBIT PROGRES (HIDUP!)
+            ========================================= */}
+        <div className="relative flex justify-end w-1/3 pr-2">
+           <motion.div 
+             animate={{ y: [-4, 4, -4] }}
+             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+             className="relative w-[85px] h-[85px]"
+           >
+              {/* Kilau Lingkaran Belakang */}
+              <div className="absolute inset-0 rounded-full bg-[var(--gold-light)]/20 blur-[20px] mix-blend-screen"></div>
 
+              {/* Svg Cincin Modern dengan ketebalan yang memukau */}
+              <svg width="85" height="85" viewBox="0 0 100 100" className="-rotate-90 filter drop-shadow-[0_0_10px_rgba(0,0,0,0.3)]">
+                <defs>
+                  <linearGradient id="orbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fff" />
+                    <stop offset="50%" stopColor="var(--gold-light)" />
+                    <stop offset="100%" stopColor="var(--gold-dark)" />
+                  </linearGradient>
+                </defs>
+
+                {/* Track Base / Lintasan Cincin (Slightly Darker) */}
+                <circle cx="50" cy="50" r="40" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+                
+                {/* Lintasan Glow Tembus Pandang */}
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(250,210,90,0.15)" strokeWidth="6" />
+
+                {/* The Golden Progress Orbit */}
+                <circle 
+                  cx="50" cy="50" r="40" fill="none" 
+                  stroke="url(#orbitGrad)" strokeWidth="6" strokeLinecap="round" 
+                  style={{ strokeDasharray: circ, strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }} 
+                />
+              </svg>
+
+              {/* Bintang Satelit Orbiting the Progress Ring */}
+              {progressPct > 0 && (
+                <motion.div 
+                  className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="absolute top-[3px] left-[50%] -translate-x-1/2 -translate-y-1/2 text-[var(--gold-light)] text-[10px] drop-shadow-[0_0_8px_#fff]">✦</div>
+                </motion.div>
+              )}
+
+              {/* Inner Text Center */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pt-1 drop-shadow-md">
+                <span className="text-[20px] font-sans font-bold text-white leading-none">{progressPct}</span>
+                <span className="text-[9px] font-bold text-white/50 tracking-widest">%</span>
+              </div>
+           </motion.div>
+        </div>
       </div>
 
+
       {/* =========================================
-          AREA BAWAH: Progress Bar (Dew/Vine Style)
+          BARIS 3: TRACKING MINI GLASS CARD
           ========================================= */}
-      <div className="relative z-10 w-full mt-auto">
-        <div className="flex justify-between items-end mb-2 px-1">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[9px] font-bold text-white/50 tracking-widest uppercase">{t('prog_total_lbl')}</span>
-            <span className="text-[10px] text-white/90 font-medium tracking-wider">{blockLabel}</span>
-          </div>
-          
-          {/* Angka progres minimalis, melayang */}
-          <div className="flex items-baseline gap-0.5">
-             <span className="text-2xl font-sans font-bold text-white leading-none tracking-tight">
-                {progressPct}
-             </span>
-             <span className="text-[10px] font-medium text-white/60 mb-0.5">%</span>
-          </div>
-        </div>
+      <div className="flex items-center justify-between bg-black/25 backdrop-blur-md rounded-2xl p-3 border border-white/10 relative z-10 shadow-[inset_0_2px_15px_rgba(255,255,255,0.03)]">
+         <div className="flex flex-col">
+            <span className="text-[9px] font-semibold text-white/40 tracking-[0.1em] uppercase mb-0.5">Target Misi</span>
+            <span className="text-[12px] font-bold text-white drop-shadow-sm flex items-center gap-1.5">
+              <span className="text-[var(--gold-light)]">{doneCount}</span>
+              <span className="text-white/30 font-light">/</span>
+              <span>{target} <span className="text-[10px] text-white/50 uppercase ml-1">Gulungan</span></span>
+            </span>
+         </div>
+         
+         <div className="h-[25px] w-px bg-white/10 mx-2"></div>
 
-        {/* Progress Bar (Sulur Kaca Tipis & Mengalir) */}
-        <div className="h-[6px] w-full rounded-full bg-white/10 overflow-hidden shadow-inner backdrop-blur-md relative border border-white/5">
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPct}%` }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute top-0 left-0 bottom-0 rounded-full"
-            style={{ 
-              background: `linear-gradient(90deg, ${themeColors.accent}33 0%, ${themeColors.accent}ff 100%)`,
-              boxShadow: `0 0 10px ${themeColors.accent}aa`
-            }}
-          >
-            {/* Kilau kecil (embun berjalan) di pucuk progress */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_3px_white] blur-[1px]"></div>
-          </motion.div>
-        </div>
-
-        {/* Informasi slide (sangat minimalis modern, P C N spacing) */}
-        <div className="flex justify-between mt-2 px-1 text-[10px] font-medium text-white/40 uppercase tracking-widest">
-           <span>{doneCount} S L I D E S</span>
-           <span>/ {target} M I S S I O N</span>
-        </div>
+         <div className="flex flex-col text-right">
+            <span className="text-[9px] font-semibold text-white/40 tracking-[0.1em] uppercase mb-0.5">Musim</span>
+            <span className="text-[10px] font-bold text-white/80 uppercase tracking-wider">{blockLabel}</span>
+         </div>
       </div>
 
     </div>
   );
 };
-
-// Komponen Ikon Ajaib Kecil
-const SparkleIcon = ({ color }: { color: string }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" fill={color} opacity="0.9" />
-    <path d="M5 4L5.5 6.5L8 7L5.5 7.5L5 10L4.5 7.5L2 7L4.5 6.5L5 4Z" fill="white" opacity="0.6" />
-  </svg>
-);
