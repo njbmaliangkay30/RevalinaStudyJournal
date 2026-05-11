@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { useTranslation } from '../lib/i18n';
-import { Hourglass, BookOpen, Target, Flame, Trophy, Clock, Medal, Crown } from 'lucide-react';
+// Menambahkan Sparkles di sini
+import { Hourglass, BookOpen, Target, Flame, Trophy, Clock, Medal, Crown, Sparkles } from 'lucide-react';
 
-// --- KOMPONEN BANTUAN UNTUK KARTU KACA PERI (FAIRY GLASS CARD) ---
 interface CardProps {
   title: string;
   value: React.ReactNode;
@@ -21,14 +21,11 @@ const FairyGlassCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Ico
     style={{
       backgroundColor: 'var(--bg-card)',
       border: '1px solid var(--border-card)',
-      // Efek bayangan ganda: luar untuk kedalaman, dalam untuk efek kaca
       boxShadow: '0 8px 32px rgba(0,0,0,0.03), inset 0 2px 0 rgba(255,255,255,0.4)'
     }}
   >
-    {/* Bias Cahaya (Glow) Tersembunyi yang muncul saat hover */}
     <div className={`absolute -inset-2 opacity-0 group-hover:opacity-20 transition-opacity duration-700 blur-2xl rounded-full bg-gradient-to-br ${gradientClass} pointer-events-none`} />
 
-    {/* Header Kartu: Ikon Bergradasi & Judul */}
     <div className="flex items-center gap-3 mb-4 relative z-10">
       <div 
         className={`flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br ${gradientClass} shadow-inner`}
@@ -43,7 +40,6 @@ const FairyGlassCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Ico
       </h3>
     </div>
 
-    {/* Isi Kartu */}
     <div className="flex flex-col relative z-10">
       <div 
         className={`${isHalf ? 'text-[28px]' : 'text-[34px]'} font-extrabold font-sans leading-none tracking-tight flex items-baseline gap-1 bg-clip-text text-transparent bg-gradient-to-br from-[var(--text-dark)] to-[var(--text-mid)]`}
@@ -60,7 +56,6 @@ const FairyGlassCard: React.FC<CardProps> = ({ title, value, subtitle, icon: Ico
   </div>
 );
 
-// --- HALAMAN DASHBOARD UTAMA ---
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const { slides, target, blockEnd, pptDots } = useAppStore();
@@ -139,7 +134,6 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Grid Utama (Gaya iOS Modern) */}
       <div className="grid grid-cols-2 gap-4">
         
         <FairyGlassCard 
@@ -147,7 +141,7 @@ export const Dashboard: React.FC = () => {
           value={examInfo.val}
           subtitle={examInfo.lbl}
           icon={Hourglass}
-          gradientClass={examInfo.iconClass || examInfo.gradientClass}
+          gradientClass={examInfo.gradientClass} // Diperbaiki dari iconClass menjadi gradientClass
           isHalf={false}
         />
 
@@ -186,7 +180,6 @@ export const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* Leaderboard Section - Desain Kaca Mewah */}
       <div className="mt-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-1.5 rounded-lg bg-[var(--gold-pale)] border border-[var(--gold-light)] shadow-sm">
@@ -199,7 +192,7 @@ export const Dashboard: React.FC = () => {
         </div>
         
         <div className="flex gap-2 p-1.5 rounded-[16px] mb-4 backdrop-blur-md bg-[var(--bg-tab)] border border-[var(--border-card)]">
-          <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] bg-white text-[var(--text-dark)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all">
+          <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] bg-[var(--bg-card-solid)] text-[var(--text-dark)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all">
             <Clock size={14} className="text-[var(--text-mid)]" /> {t('lb_tab_recent')}
           </button>
           <button className="flex items-center justify-center gap-2 flex-1 py-2 text-[11px] font-bold rounded-[12px] text-[var(--text-soft)] hover:bg-white/40 transition-all">
