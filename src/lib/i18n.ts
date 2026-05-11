@@ -1,6 +1,8 @@
 import { useAppStore } from '../store/useAppStore';
+import { Language } from '../types'; // Tambahkan ini
 
-const dictionary = {
+// Kita beri tahu TypeScript bahwa ini adalah kamus dengan struktur yang fleksibel
+const dictionary: Record<Language, Record<string, string>> = {
   id: {
     hdr_eyebrow: "Study Journey",
     hdr_greeting: "semangat belajarnya!",
@@ -238,14 +240,14 @@ const dictionary = {
     prog_total_lbl: "Total Slides This Block",
     prog_done_lbl: "slides read",
     prog_target_lbl: "target",
-    // Tambahkan bahasa Inggris lainnya nanti jika diperlukan
   }
 };
 
 export const useTranslation = () => {
   const lang = useAppStore((state) => state.lang);
 
-  const t = (key: keyof typeof dictionary['id'], ...args: (string | number)[]) => {
+  const t = (key: string, ...args: (string | number)[]) => {
+    // Cari terjemahan, jika tidak ada fallback ke ID, jika masih tidak ada kembalikan key
     let str = dictionary[lang]?.[key] || dictionary['id'][key] || key;
     args.forEach((arg, i) => { 
       str = str.replace(`{${i + 1}}`, String(arg)); 
