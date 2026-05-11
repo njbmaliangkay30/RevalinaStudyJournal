@@ -11,57 +11,6 @@ const MAGIC_QUOTES = [
   "Fokus hari ini adalah keajaiban esok hari."
 ];
 
-// 🌟 SISTEM PARTIKEL DEBU PERI (TINKERBELL GLOW DUST)
-const PixieDust = ({ count, activeColor }: { count: number, activeColor: string }) => {
-  const [particles, setParticles] = useState<any[]>([]);
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100, // 0 - 100% Horizontal
-      yOffset: Math.random() * 50 + 20, // Seberapa jauh partikel naik (vw/vh)
-      size: Math.random() * 3 + 1, // 1px - 4px
-      duration: Math.random() * 5 + 4, // 4s - 9s 
-      delay: Math.random() * 6, // Waktu tunggu muncul
-      blur: Math.random() > 0.5 ? Math.random() * 3 : 0, // Ada yang terang, ada yang buram blur
-      opacity: Math.random() * 0.6 + 0.3
-    }));
-    setParticles(newParticles);
-  }, [count]);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          initial={{ y: "110%", x: `${p.x}%`, opacity: 0, scale: 0.5 }}
-          animate={{
-            y: `-${p.yOffset}%`,
-            x: `${p.x + (Math.random() * 4 - 2)}%`, // Gerak zig-zag ringan
-            opacity: [0, p.opacity, 0],
-            scale: [0.5, 1.2, 0.5],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            position: "absolute",
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            borderRadius: "50%",
-            background: activeColor,
-            boxShadow: `0 0 ${p.size * 2}px ${activeColor}, 0 0 ${p.size * 3}px #fff`,
-            filter: `blur(${p.blur}px)`,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
 export const Header: React.FC = () => {
   const { t } = useTranslation();
   const { name, coins, target, pptDots, theme, blockStart, blockEnd, lang } = useAppStore();
@@ -102,10 +51,10 @@ export const Header: React.FC = () => {
   };
 
   const getBorderTheme = () => theme === 'moon' ? 'rgba(138,180,248,0.2)' : theme === 'sakura' ? 'rgba(240,100,160,0.2)' : 'rgba(245,200,66,0.2)';
-  const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; // Emas peri
+  const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
 
   return (
-    <div 
+    <div className="header"
       style={{ 
         background: getThemeBg(),
         padding: '28px 20px 22px', 
@@ -113,32 +62,66 @@ export const Header: React.FC = () => {
         overflow: 'hidden', 
         zIndex: 10, 
         borderBottom: `2px solid ${getBorderTheme()}`, 
-        boxShadow: '0 4px 25px rgba(10, 30, 5, 0.4)' 
+        boxShadow: '0 4px 20px rgba(26, 74, 10, 0.4)' 
       }}
     >
-      {/* --- LAYER 0: NAFAS HUTAN (Ambient Breathing Glow) --- */}
+      {/* 🌟 1. NAPAS HUTAN (Ambient Breathing Glow) */}
       <motion.div 
         animate={{ opacity: [0.1, 0.4, 0.1], scale: [0.95, 1.05, 0.95] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         style={{
           position: 'absolute', top: '10%', left: '5%', width: '90%', height: '80%',
           background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
-          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(30px)'
+          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(30px)', zIndex: 0
         }}
       />
       
-      <div className="header-leaves">
-        <div className="leaf leaf1"></div>
-        <div className="leaf leaf2"></div>
-        <div className="leaf leaf3"></div>
-        <div className="leaf leaf4"></div>
+      {/* 🍃 2. DAUN TINKERBELL ORISINAL */}
+      {/* Posisi Z-Index ditingkatkan agar selalu tampil di belakang teks, tak tertutup warna */}
+      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+        <div className="leaf leaf1" style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '120px', height: '80px', top: '-20px', right: '-25px', transform: 'rotate(35deg)' }}></div>
+        <div className="leaf leaf2" style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '80px', height: '50px', bottom: '-10px', right: '25%', transform: 'rotate(-15deg)' }}></div>
+        <div className="leaf leaf3" style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '70px', height: '45px', top: '30px', left: '-15px', transform: 'rotate(60deg)' }}></div>
+        <div className="leaf leaf4" style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.08)', boxShadow: 'inset 0 0 10px rgba(255,255,255,0.05)', width: '40px', height: '25px', top: '10px', right: '40%', transform: 'rotate(120deg)' }}></div>
+      </div>
+      
+      {/* ✨ 3. SISTEM PARTIKEL DEBU PERI (Bergerak KE ATAS di Background) */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
+        {Array.from({ length: 40 }).map((_, i) => {
+          const size = Math.random() * 4 + 2; // Partikel lebih besar dan terlihat
+          const color = Math.random() > 0.5 ? '#fff' : glowColor;
+          return (
+            <motion.div
+              key={i}
+              initial={{ y: "100%", x: `${Math.random() * 100}%`, opacity: 0 }}
+              animate={{ 
+                y: ["100%", "-20%"], // Berangkat dari bawah (100) hingga keluar atas (-20)
+                x: `${Math.random() * 100}%`, 
+                opacity: [0, 0.8, 0] // Fade In -> Menyala -> Menghilang di ujung atas
+              }}
+              transition={{
+                duration: Math.random() * 6 + 4, // Bergerak selama 4 - 10 detik
+                delay: Math.random() * 5, 
+                repeat: Infinity, 
+                ease: "linear"
+              }}
+              style={{
+                position: "absolute",
+                bottom: 0, // KUNCI! Bertolak dari bagian paling bawah komponen Header ini
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: "50%",
+                background: color,
+                boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`,
+                filter: `blur(${Math.random() > 0.5 ? 1 : 0}px)`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* 🌟 MENGGANTIKAN SPARKLE LAMA DENGAN PIXIE DUST ANIMATED 🌟 */}
-      <PixieDust count={60} activeColor={glowColor} />
-      
       {/* --- Baris 1: Study Journey & Poin Bouncing --- */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
         <div style={{ fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontWeight: 700, textShadow: '0 0 8px rgba(255,255,255,0.3)' }}>
           {t('hdr_eyebrow')}
         </div>
@@ -147,6 +130,7 @@ export const Header: React.FC = () => {
           whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: '12px', padding: '4px 10px', color: '#ffe478', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', boxShadow: 'inset 0 1px 4px rgba(255,255,255,0.1), 0 0 10px rgba(245,200,66,0.1)' }}
         >
+          {/* Ikon Koin berdenyut */}
           <motion.span 
             animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -157,10 +141,8 @@ export const Header: React.FC = () => {
       </div>
 
       {/* --- Baris 2: Nama Elegan & Rank --- */}
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px', position: 'relative', zIndex: 1, marginTop: '10px' }}>
-        <motion.h1 
-          animate={{ opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px', position: 'relative', zIndex: 10, marginTop: '10px' }}>
+        <h1 
           style={{ 
             fontFamily: "'Cormorant Garamond', 'Alice', serif", fontSize: '38px', fontWeight: 700, fontStyle: 'italic', 
             lineHeight: 1, margin: 0, backgroundImage: 'linear-gradient(to bottom, #ffffff 40%, #fef08a 100%)',
@@ -168,18 +150,15 @@ export const Header: React.FC = () => {
           }}
         >
           {name || "Peri Kecil"},
-        </motion.h1>
+        </h1>
         
-        <div style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, background: '#f5c842', filter: 'blur(8px)', opacity: 0.3, borderRadius: '12px' }}></div>
-          <span style={{ position: 'relative', background: 'rgba(245,200,66,0.15)', border: '1px solid rgba(245,200,66,0.4)', padding: '4px 10px', borderRadius: '12px', color: '#ffe478', fontWeight: 700, fontSize: '10px', fontFamily: '"Quicksand", system-ui, sans-serif', letterSpacing: '0.05em' }}>
-            {rankStr}
-          </span>
-        </div>
+        <span style={{ position: 'relative', background: 'rgba(245,200,66,0.15)', border: '1px solid rgba(245,200,66,0.4)', padding: '4px 10px', borderRadius: '12px', color: '#ffe478', fontWeight: 700, fontSize: '10px', fontFamily: '"Quicksand", system-ui, sans-serif', letterSpacing: '0.05em', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}>
+          {rankStr}
+        </span>
       </div>
       
       {/* --- Baris 3: Sapaan & Quote (Mantra Fade) --- */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
         <div>
           <div style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '26px', color: '#ffe478', textShadow: '0 0 15px rgba(245,200,66,0.5)', marginTop: '2px', marginBottom: '2px', lineHeight: 1.15, fontWeight: 600 }}>
             <span>{greeting}</span>
@@ -204,13 +183,15 @@ export const Header: React.FC = () => {
       </div>
 
       {/* --- Baris 4: Floating Progress Bar & Info --- */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '24px', position: 'relative', zIndex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '24px', position: 'relative', zIndex: 10 }}>
         
+        {/* LINGKARAN PROGRESS YANG FLOATING */}
         <motion.div 
           animate={{ y: [-5, 5, -5] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: 'relative', width: '85px', height: '85px', flexShrink: 0, filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.4))' }}
         >
+          {/* Backlight Ring */}
           <div style={{ position: 'absolute', inset: 4, borderRadius: '50%', background: '#f5c842', filter: 'blur(15px)', opacity: 0.15 }}></div>
 
           <svg width="85" height="85" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
@@ -241,6 +222,7 @@ export const Header: React.FC = () => {
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             >
+              {/* Bintang Orb Cahaya (Pulsing) */}
               <motion.div 
                 animate={{ scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
@@ -250,6 +232,7 @@ export const Header: React.FC = () => {
           )}
         </motion.div>
         
+        {/* Info Batang Progress Horizontal Asli Anda */}
         <div style={{ flex: 1, fontFamily: '"Quicksand", system-ui, sans-serif' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.05em', margin: 0, textTransform: 'uppercase' }}>
@@ -261,7 +244,9 @@ export const Header: React.FC = () => {
           </div>
 
           <div style={{ position: 'relative', height: '6px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', marginBottom: '8px', width: '100%', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+            
             <div style={{ position: 'absolute', top: 0, left: 0, height: '6px', borderRadius: '4px', background: 'linear-gradient(90deg, #b8900a, #F5C842, #fff)', boxShadow: '0 0 12px rgba(245,200,66,0.9)', width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(.4,0,.2,1)' }}></div>
+            
             {progressPct > 0 && (
               <motion.div 
                 animate={{ x: ['-100%', '250%'] }}
@@ -273,10 +258,12 @@ export const Header: React.FC = () => {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}>
             <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-              <strong style={{ color: '#ffe478', fontSize: '15px', textShadow: '0 0 8px rgba(245,200,66,0.5)' }}>{doneCount}</strong> {t('prog_done_lbl')}
+              <strong style={{ color: '#ffe478', fontSize: '15px', textShadow: '0 0 8px rgba(245,200,66,0.5)' }}>{doneCount}</strong> 
+              {t('prog_done_lbl')}
             </span>
             <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-              {t('prog_target_lbl')} <strong style={{ color: '#fff', fontSize: '14px', textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>{target}</strong>
+              {t('prog_target_lbl')} 
+              <strong style={{ color: '#fff', fontSize: '14px', textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>{target}</strong>
             </span>
           </div>
         </div>
