@@ -99,25 +99,20 @@ export const Header: React.FC = () => {
   }, []);
 
   return (
-    <div className="header"
+    <div className="header relative z-10 overflow-hidden"
       style={{ 
         background: getThemeBg(),
-        padding: '28px 20px 22px', 
-        position: 'relative', 
-        overflow: 'hidden', 
-        zIndex: 10, 
-        borderBottom: `2px solid ${getBorderTheme()}`, 
-        boxShadow: '0 4px 25px rgba(10, 30, 5, 0.4)' 
+        // PENTING: Tambahkan pb-20 (padding bawah yang dalam) agar menyatu dengan layar
+        padding: '28px 20px 80px', 
+        // HAPUS borderRadius kaku dan borderBottom di sini!
       }}
     >
-      {/* 🌟 1. NAPAS HUTAN (Ambient Breathing Glow - 2 Sisi) */}
-      
-      {/* Glow Kiri Atas */}
+      {/* 🌟 NAFAS HUTAN (Tinggal ditarik lebih lebar) */}
       <motion.div 
         animate={{ opacity: [0.15, 0.35, 0.15], scale: [0.95, 1.1, 0.95] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          position: 'absolute', top: '-25%', left: '-15%', width: '70%', height: '80%',
+          position: 'absolute', top: '-25%', left: '-15%', width: '150%', height: '150%',
           background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
           pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0
         }}
