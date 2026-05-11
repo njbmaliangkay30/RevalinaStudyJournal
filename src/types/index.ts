@@ -2,35 +2,10 @@ export type Theme = 'light' | 'dark' | 'sakura' | 'moon';
 export type Language = 'id' | 'en';
 export type TabName = 'dashboard' | 'tracker' | 'reward' | 'setting';
 
-export interface PptDot {
-  done: boolean;
-  title: string;
-  date: string;
-  migrated?: boolean;
-}
-
-export interface Flashcard {
-  id: string;
-  q: string;
-  a: string;
-  updatedAt: number;
-}
-
-export interface MatchItem {
-  id: string;
-  src: string;
-  word: string;
-}
-
-export interface Inventory {
-  streakFreeze: number;
-  luckCharm?: number;
-  memCrystal?: number;
-  doubleStar?: number;
-  themeMoon?: number;
-  themeSakura?: number;
-  [key: string]: number | undefined;
-}
+export interface PptDot { done: boolean; title: string; date: string; migrated?: boolean; }
+export interface Flashcard { id: string; q: string; a: string; updatedAt: number; }
+export interface MatchItem { id: string; src: string; word: string; }
+export interface Inventory { streakFreeze: number; luckCharm?: number; memCrystal?: number; doubleStar?: number; themeMoon?: number; themeSakura?: number; [key: string]: number | undefined; }
 
 export interface AppState {
   activeTab: TabName;
