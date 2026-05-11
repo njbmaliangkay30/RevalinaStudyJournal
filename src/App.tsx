@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion'; // Tambahan AnimatePresence
 import { useAppStore } from './store/useAppStore';
 import { Header } from './components/layout/Header';
 import { TabBar } from './components/layout/TabBar';
@@ -22,32 +23,41 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] transition-colors duration-700">
+    <div className="min-h-screen bg-[var(--bg-main)] transition-colors duration-700 font-sans selection:bg-[var(--gold-pale)] selection:text-[var(--gold-dark)]">
       <div id="ambient-layer"></div>
       <div id="dim-overlay"></div>
 
       <Header />
 
-      {/* Konten Utama (Body) */}
-      {/* PENTING: -mt-6 menarik konten ke atas agar menimpa lengkungan Header */}
       <main className="relative z-20 px-4 -mt-6 pb-32">
-        
-        {/* Sync Bar yang lebih rapi (melayang di atas konten) */}
-        <div className="flex items-center justify-center gap-2 bg-white/60 dark:bg-black/40 backdrop-blur-md py-1.5 px-4 rounded-full mx-auto w-fit mb-4 border border-[var(--border-card)] shadow-sm">
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--green-leaf)] animate-pulse"></div>
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-center gap-2 bg-white/60 dark:bg-black/40 backdrop-blur-xl py-1.5 px-4 rounded-full mx-auto w-fit mb-4 border border-[var(--border-card)] shadow-[0_4px_15px_rgba(0,0,0,0.05)]"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--green-leaf)] animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_8px_var(--green-leaf)]"></div>
           <span className="text-[10px] font-bold text-[var(--text-soft)] uppercase tracking-wider">
             Tersinkron
           </span>
+        </motion.div>
+
+        <div className="pages-wrapper relative">
+          {/* Efek Transisi Antar Tab yang Mewah */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab} // Kunci penting agar Framer Motion tahu kapan harus animasi
+              initial={{ opacity: 0, y: 15, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -15, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} // Spring curve buatan Apple
+            >
+              {renderActivePage()}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        <div className="pages-wrapper">
-          <div className="page active transition-all duration-300">
-            {renderActivePage()}
-          </div>
-        </div>
-
-        <div className="text-center mt-10">
-          <span className="text-[10px] font-bold tracking-widest text-[var(--text-soft)] uppercase opacity-60">
+        <div className="text-center mt-12 mb-4">
+          <span className="text-[10px] font-bold tracking-widest text-[var(--text-soft)] uppercase opacity-40">
             ✦ Revalina's Pixie Dust ✦
           </span>
         </div>
