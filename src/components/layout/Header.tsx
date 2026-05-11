@@ -49,149 +49,86 @@ export const Header: React.FC = () => {
     }
   };
 
-  const getBorderTheme = () => theme === 'moon' ? 'rgba(138,180,248,0.2)' : theme === 'sakura' ? 'rgba(240,100,160,0.2)' : 'rgba(245,200,66,0.2)';
   const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
 
-  // Injeksi Keyframes untuk Animasi Daun yang Terbang Melayang & Hilang
+  // Injeksi Keyframes Leaf Sway Asli Anda, TIDAK DIUBAH 
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
-      /* Semua Daun Sekarang Menjauh dengan Fade, Angin Membawa Mereka */
-      
-      @keyframes flyLeafTopRight { 
-        0% { transform: translate(0, 0) rotate(35deg) scale(1); opacity: 0; } 
-        15% { opacity: 0.8; }
-        60% { opacity: 0.8; }
-        100% { transform: translate(120px, -60px) rotate(60deg) scale(0.6); opacity: 0; } 
-      }
-      
-      @keyframes flyLeafBottomRight { 
-        0% { transform: translate(0, 0) rotate(-15deg) scale(1); opacity: 0; } 
-        20% { opacity: 0.7; }
-        75% { opacity: 0.7; }
-        100% { transform: translate(80px, -40px) rotate(-30deg) scale(0.7); opacity: 0; } 
-      }
-      
-      @keyframes flyLeafMidLeft { 
-        0% { transform: translate(0, 0) rotate(60deg) scale(1); opacity: 0; } 
-        25% { opacity: 0.6; }
-        80% { opacity: 0.6; }
-        100% { transform: translate(-100px, 50px) rotate(30deg) scale(0.5); opacity: 0; } 
-      }
-      
-      @keyframes flyLeafTopLeft { 
-        0% { transform: translate(0, 0) rotate(120deg) scale(1); opacity: 0; } 
-        10% { opacity: 0.9; }
-        60% { opacity: 0.9; }
-        100% { transform: translate(150px, -150px) rotate(180deg) scale(0.4); opacity: 0; } 
-      }
-
-      /* Debu Naik */
-      @keyframes dustRise {
-        0% { transform: translateY(0px) scale(0.5); opacity: 0; }
-        20% { opacity: 0.9; }
-        80% { opacity: 0.6; }
-        100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
-      }
+      @keyframes swayLeafGentle { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(6deg) scale(1.02); } }
+      @keyframes swayLeafReverse { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-8deg) scale(0.98); } }
+      @keyframes driftAway { 0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; } 15% { opacity: 0.6; } 85% { opacity: 0.4; } 100% { transform: translate(150px, -200px) rotate(45deg) scale(0.6); opacity: 0; } }
+      @keyframes driftAwayReverse { 0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.3; } 100% { transform: translate(-200px, -150px) rotate(-60deg) scale(0.5); opacity: 0; } }
+      @keyframes dustRise { 0% { transform: translateY(0px) scale(0.5); opacity: 0; } 20% { opacity: 0.9; } 80% { opacity: 0.6; } 100% { transform: translateY(-400px) scale(1.5); opacity: 0; } }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };
   }, []);
 
+  // 🪄 PENTING: Pada Baris Ini! 'borderBottom' dihapus. 'rounded-b' dihapus. 'paddingBottom' saya buat 100px.
   return (
-    <div className="header relative z-10 overflow-hidden"
+    <div className="header"
       style={{ 
         background: getThemeBg(),
-        // PENTING: Tambahkan pb-20 (padding bawah yang dalam) agar menyatu dengan layar
-        padding: '28px 20px 80px', 
-        // HAPUS borderRadius kaku dan borderBottom di sini!
+        padding: '28px 20px 100px', 
+        position: 'relative', 
+        overflow: 'hidden', 
+        zIndex: 10 
       }}
     >
-      {/* 🌟 NAFAS HUTAN (Tinggal ditarik lebih lebar) */}
-      <motion.div 
-        animate={{ opacity: [0.15, 0.35, 0.15], scale: [0.95, 1.1, 0.95] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: 'absolute', top: '-25%', left: '-15%', width: '150%', height: '150%',
-          background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
-          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0
-        }}
-      />
-      
-      {/* Glow Kanan Bawah */}
+      {/* 🌟 1. CAHAYA SINEMATIK: DIPOSISIKAN PRESISI DI KIRI-ATAS DAN KANAN-BAWAH */}
       <motion.div 
         animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.05, 1] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          position: 'absolute', bottom: '-25%', right: '-15%', width: '80%', height: '70%',
+          position: 'absolute', top: '-25%', left: '-10%', width: '70%', height: '80%',
           background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`,
           pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0
         }}
       />
+      <motion.div 
+        animate={{ opacity: [0.05, 0.25, 0.05], scale: [0.95, 1.1, 0.95] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        style={{
+          position: 'absolute', bottom: '-20%', right: '-5%', width: '80%', height: '70%',
+          background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
+          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0
+        }}
+      />
 
-      {/* ✨ 2. PIXIE DUST (Partikel Bergerak Leluasa Ke Atas) */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
-        {Array.from({ length: 50 }).map((_, i) => {
+      {/* 🍃 2. DAUN TINKERBELL */}
+      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '150px', height: '100px', top: '-15px', right: '-40px', transform: 'rotate(25deg)', filter: 'blur(3px)', animation: 'swayLeafGentle 10s infinite alternate ease-in-out' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '90px', height: '60px', top: '50px', left: '-20px', transform: 'rotate(50deg)', filter: 'blur(4px)', animation: 'swayLeafReverse 12s infinite alternate ease-in-out' }}></div>
+
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.15)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.1)', width: '120px', height: '80px', top: '-20px', right: '-25px', transform: 'rotate(35deg)', transformOrigin: 'top right', animation: 'swayLeafGentle 8s infinite ease-in-out' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.2)', boxShadow: 'inset 0 0 8px rgba(245,200,66,0.2), 0 0 4px rgba(245,200,66,0.08)', border: '1px solid rgba(245,200,66,0.12)', width: '80px', height: '50px', bottom: '-10px', right: '25%', transform: 'rotate(-15deg)', transformOrigin: 'bottom right', animation: 'swayLeafReverse 7s infinite ease-in-out' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.18)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.15)', width: '70px', height: '45px', top: '30px', left: '-15px', transform: 'rotate(60deg)', transformOrigin: 'left center', animation: 'swayLeafGentle 9s infinite ease-in-out' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.15)', boxShadow: 'inset 0 0 12px rgba(255,255,255,0.2), 0 0 8px rgba(245,200,66,0.3)', border: '1px solid rgba(245,200,66,0.25)', width: '40px', height: '25px', top: '10px', right: '40%', transform: 'rotate(120deg)', transformOrigin: 'top left', animation: 'swayLeafReverse 6s infinite ease-in-out' }}></div>
+        
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.12)', border: '1px solid rgba(245,200,66,0.15)', width: '30px', height: '18px', bottom: '20px', left: '20%', animation: 'driftAwayReverse 15s infinite ease-in-out', animationDelay: '2s' }}></div>
+        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.12)', border: '1px solid rgba(141,201,90,0.1)', width: '45px', height: '30px', top: '40%', right: '10%', animation: 'driftAway 18s infinite ease-in-out', animationDelay: '6s' }}></div>
+      </div>
+      
+      {/* ✨ 3. SISTEM PARTIKEL DEBU PERI LEBIH PADAT */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
+        {Array.from({ length: 60 }).map((_, i) => {
           const size = Math.random() * 4 + 2; 
           const color = Math.random() > 0.4 ? '#fff' : glowColor;
           return (
             <div 
               key={i}
               style={{
-                position: 'absolute',
-                bottom: `-${Math.random() * 50}px`,
-                left: `${Math.random() * 100}%`,
-                width: `${size}px`, height: `${size}px`,
-                backgroundColor: color,
-                borderRadius: '50%',
+                position: 'absolute', bottom: `-${Math.random() * 50}px`, left: `${Math.random() * 100}%`,
+                width: `${size}px`, height: `${size}px`, backgroundColor: color, borderRadius: '50%',
                 boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`,
-                animation: `dustRise ${Math.random() * 6 + 5}s infinite linear`,
-                animationDelay: `${Math.random() * 6}s`,
-                opacity: 0,
+                animation: `dustRise ${Math.random() * 7 + 4}s infinite linear`, animationDelay: `${Math.random() * 6}s`, opacity: 0,
                 filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)`
               }}
             />
           );
         })}
       </div>
-
-      {/* 🍃 3. DAUN YANG SEMUANYA MENJAUH DENGAN ANGIN */}
-      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
-        
-        {/* Daun 1 - Kanan Atas */}
-        <div style={{ 
-          position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', 
-          boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 8px rgba(245,200,66,0.2)', border: '1px solid rgba(245,200,66,0.1)', 
-          width: '120px', height: '80px', top: '-10px', right: '-15px', 
-          animation: 'flyLeafTopRight 14s infinite ease-in-out', animationDelay: '1s' 
-        }}></div>
-
-        {/* Daun 2 - Kanan Bawah Tengah */}
-        <div style={{ 
-          position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.18)', 
-          boxShadow: 'inset 0 0 10px rgba(245,200,66,0.1), 0 0 5px rgba(245,200,66,0.15)', border: '1px solid rgba(245,200,66,0.1)', 
-          width: '80px', height: '50px', bottom: '15%', right: '25%', 
-          animation: 'flyLeafBottomRight 16s infinite ease-in-out', animationDelay: '5s' 
-        }}></div>
-
-        {/* Daun 3 - Kiri Tengah */}
-        <div style={{ 
-          position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141, 201, 90, 0.15)', 
-          boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 6px rgba(245,200,66,0.2)', border: '1px solid rgba(245,200,66,0.12)', 
-          width: '70px', height: '45px', top: '35%', left: '5%', 
-          animation: 'flyLeafMidLeft 13s infinite ease-in-out', animationDelay: '2.5s' 
-        }}></div>
-
-        {/* Daun 4 - Melintas dari Bawah Cepat (Warna Amber/Kuning Daun Kering) */}
-        <div style={{ 
-          position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245, 200, 66, 0.15)', 
-          boxShadow: 'inset 0 0 15px rgba(255,255,255,0.2), 0 0 10px rgba(245,200,66,0.3)', border: '1px solid rgba(245,200,66,0.25)', 
-          width: '45px', height: '30px', top: '15%', left: '20%', 
-          animation: 'flyLeafTopLeft 11s infinite ease-in-out', animationDelay: '8s' 
-        }}></div>
-
-      </div>
-
 
       {/* --- KONTEN TEKS --- */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
@@ -203,11 +140,7 @@ export const Header: React.FC = () => {
           whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: '12px', padding: '4px 10px', color: '#ffe478', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', boxShadow: 'inset 0 1px 4px rgba(255,255,255,0.1), 0 0 10px rgba(245,200,66,0.1)' }}
         >
-          <motion.span 
-            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            style={{ fontSize: '14px', filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.8))' }}
-          >✨</motion.span> 
+          <motion.span animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: '14px', filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.8))' }}>✨</motion.span> 
           <span style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{coins}</span>
         </motion.div>
       </div>
@@ -246,10 +179,7 @@ export const Header: React.FC = () => {
         <AnimatePresence mode="wait">
           <motion.div 
             key={quote}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 0.95, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 0.95, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.8 }}
             style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '15px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.7)', lineHeight: '1.3', fontWeight: 600, maxWidth: '45%', textAlign: 'right', marginTop: '6px' }}
           >
             ❝ {quote} ❞
@@ -259,11 +189,8 @@ export const Header: React.FC = () => {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '24px', position: 'relative', zIndex: 10 }}>
         
-        <motion.div 
-          animate={{ y: [-5, 5, -5] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'relative', width: '85px', height: '85px', flexShrink: 0, filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.4))' }}
-        >
+        <motion.div animate={{ y: [-5, 5, -5] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: 'relative', width: '85px', height: '85px', flexShrink: 0, filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.4))' }}>
           <div style={{ position: 'absolute', inset: 4, borderRadius: '50%', background: '#f5c842', filter: 'blur(15px)', opacity: 0.15 }}></div>
 
           <svg width="85" height="85" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
@@ -280,25 +207,13 @@ export const Header: React.FC = () => {
           </svg>
           
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <motion.div 
-              animate={{ opacity: [0.8, 1, 0.8], scale: [0.98, 1.02, 0.98] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              style={{ fontSize: '20px', fontWeight: 800, color: '#fff', lineHeight: 1, fontFamily: '"Quicksand", system-ui, sans-serif', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
-            >{progressPct}</motion.div>
+            <motion.div animate={{ opacity: [0.8, 1, 0.8], scale: [0.98, 1.02, 0.98] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: '20px', fontWeight: 800, color: '#fff', lineHeight: 1, fontFamily: '"Quicksand", system-ui, sans-serif', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>{progressPct}</motion.div>
             <div style={{ fontSize: '9px', fontWeight: 700, color: '#f5c842', marginTop: '3px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>%</div>
           </div>
           
           {progressPct > 0 && (
-            <motion.div 
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            >
-              <motion.div 
-                animate={{ scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                style={{ position: 'absolute', top: '-3px', left: '50%', transform: 'translate(-50%, -50%)', width: '7px', height: '7px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 12px 4px rgba(245,200,66,0.9), 0 0 4px 1px #fff' }}
-              ></motion.div>
+            <motion.div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}>
+              <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ position: 'absolute', top: '-3px', left: '50%', transform: 'translate(-50%, -50%)', width: '7px', height: '7px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 12px 4px rgba(245,200,66,0.9), 0 0 4px 1px #fff' }}></motion.div>
             </motion.div>
           )}
         </motion.div>
@@ -314,31 +229,20 @@ export const Header: React.FC = () => {
           </div>
 
           <div style={{ position: 'relative', height: '6px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', marginBottom: '8px', width: '100%', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
-            
             <div style={{ position: 'absolute', top: 0, left: 0, height: '6px', borderRadius: '4px', background: 'linear-gradient(90deg, #b8900a, #F5C842, #fff)', boxShadow: '0 0 12px rgba(245,200,66,0.9)', width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(.4,0,.2,1)' }}></div>
-            
             {progressPct > 0 && (
-              <motion.div 
-                animate={{ x: ['-100%', '250%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.5 }}
-                style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '40px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)', transform: 'skewX(-20deg)', pointerEvents: 'none' }}
-              />
+              <motion.div animate={{ x: ['-100%', '250%'] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.5 }} style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '40px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)', transform: 'skewX(-20deg)', pointerEvents: 'none' }} />
             )}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}>
-            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-              <strong style={{ color: '#ffe478', fontSize: '15px', textShadow: '0 0 8px rgba(245,200,66,0.5)' }}>{doneCount}</strong> 
-              {t('prog_done_lbl')}
-            </span>
-            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-              {t('prog_target_lbl')} 
-              <strong style={{ color: '#fff', fontSize: '14px', textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>{target}</strong>
-            </span>
+            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}><strong style={{ color: '#ffe478', fontSize: '15px', textShadow: '0 0 8px rgba(245,200,66,0.5)' }}>{doneCount}</strong> {t('prog_done_lbl')}</span>
+            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>{t('prog_target_lbl')} <strong style={{ color: '#fff', fontSize: '14px', textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>{target}</strong></span>
           </div>
         </div>
 
       </div>
+
     </div>
   );
 };
