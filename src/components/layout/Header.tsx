@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { useTranslation } from '../../lib/i18n';
@@ -9,212 +9,165 @@ export const Header: React.FC = () => {
 
   const doneCount = pptDots.filter(d => d.done).length;
   const progressPct = target > 0 ? Math.min(Math.round((doneCount / target) * 100), 100) : 0;
-  const circ = 213.6;
-  const strokeOffset = circ - (circ * progressPct) / 100;
-
-  // Menentukan Teks Rank beserta Icon mahkotanya
+  
+  // Logic Rank
   let rankStr = progressPct >= 100 ? "Ratu Pixie" : progressPct >= 75 ? "Peri Penjaga" : progressPct >= 50 ? "Peri Cahaya" : "Peri Pemula";
-  let rankEmoji = progressPct >= 100 ? "👑" : progressPct >= 75 ? "🌿" : progressPct >= 50 ? "✨" : "🌱";
 
-  let blockLabel = "Belum Diatur";
+  // Kalender Halus
+  let blockLabel = "Menunggu Misi...";
   if (blockStart && blockEnd) {
     const s = new Date(blockStart).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
     const e = new Date(blockEnd).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-    blockLabel = `${s} – ${e}`;
+    blockLabel = `${s} ~ ${e}`;
   }
 
-  // Generasi Partikel Debu Peri
-  useEffect(() => {
-    const wrap = document.getElementById("sparkles");
-    if (!wrap) return;
-    wrap.innerHTML = "";
-    // Menambah jumlah partikel untuk kesan lebih magis
-    for(let i=0; i<60; i++){
-      const sp = document.createElement("div"); 
-      sp.className="sp";
-      // Memvariasikan ukuran partikel (ada yang sangat kecil dan berkilau)
-      const size = Math.random() * 4 + 1;
-      sp.style.width=`${size}px`; 
-      sp.style.height=`${size}px`;
-      sp.style.left=`${Math.random() * 100}%`; 
-      sp.style.bottom=`${Math.random() * -30}px`;
-      sp.style.borderRadius = "50%";
-      sp.style.position = "absolute";
-      
-      const themeColors = {
-        moon: ["#8ab4f8","#c3d6fe","#a78bfa","#ffffff"],
-        sakura: ["#f090a0","#ffc0d0","#ffffff","#ffe0e8"],
-        light: ["#f5c842","#8dc95a","#ffffff","#ffe478"],
-        dark: ["#f5c842","#8dc95a","#ffffff","#ffe478"]
-      };
-      
-      const colors = themeColors[theme] || themeColors.light;
-      const c = colors[Math.floor(Math.random() * colors.length)];
-      
-      sp.style.background = c;
-      sp.style.boxShadow = `0 0 ${size * 2}px ${c}, 0 0 ${size * 4}px ${c}88`;
-      sp.style.animationDuration = `${3 + Math.random() * 5}s`;
-      sp.style.animationDelay = `${Math.random() * 5}s`;
-      sp.style.setProperty('--float-dist', `-${180 + Math.random() * 150}px`);
-      
-      wrap.appendChild(sp);
+  // Efek Warna Tema Latar (Soft Ethereal Colors ala Tinkerbell)
+  const getBackgroundColors = () => {
+    switch(theme) {
+      case 'moon':   return { from: '#0f172a', to: '#1e1b4b', accent: '#8ab4f8' };
+      case 'sakura': return { from: '#4a1128', to: '#831843', accent: '#f090a0' };
+      case 'dark':   return { from: '#062f22', to: '#064e3b', accent: '#f5c842' };
+      default:       return { from: '#1a4124', to: '#2c5d33', accent: '#f8d962' }; // Morning Forest Green
     }
-  }, [theme]);
-
-  // CSS Khusus Inline untuk Background Header agar bereaksi pada tema
-  const bgStyles = {
-    moon: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)',
-    sakura: 'linear-gradient(135deg, #4c1d95 0%, #831843 50%, #be123c 100%)',
-    light: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #065f46 100%)',
-    dark: 'linear-gradient(135deg, #022c22 0%, #064e3b 50%, #022c22 100%)'
   };
-
-  const currentBg = bgStyles[theme] || bgStyles.light;
+  const themeColors = getBackgroundColors();
 
   return (
-    // HEADER WRAPPER UTAMA
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative pt-10 pb-12 px-6 rounded-b-[48px] shadow-[0_15px_40px_rgba(0,0,0,0.15)] z-10 overflow-hidden group"
-      style={{ background: currentBg }}
+    <div 
+      className="relative px-6 pt-10 pb-8 rounded-b-[40px] z-10 overflow-hidden flex flex-col justify-between"
+      style={{ 
+        minHeight: '270px',
+        background: `linear-gradient(145deg, ${themeColors.from} 0%, ${themeColors.to} 100%)`,
+        boxShadow: `0 15px 45px -10px ${themeColors.from}66` // Bayangan berwarna lembut
+      }}
     >
+      {/* =========================================
+          BACKGROUND ART (Ethereal Tinkerbell Vibes)
+          ========================================= */}
       
-      {/* 1. MISTY AURA (Cahaya di dalam Header) */}
-      <div className="absolute top-[-50%] left-[-20%] w-[150%] h-[150%] bg-white/5 blur-[100px] pointer-events-none rounded-full animate-pulse duration-[8000ms]"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[80%] h-[80%] bg-[var(--gold-dark)]/10 blur-[80px] pointer-events-none rounded-full"></div>
+      {/* Glow lembut di pojok atas */}
+      <div 
+        className="absolute -top-[20%] -left-[10%] w-[80%] h-[80%] rounded-full blur-[70px] mix-blend-screen opacity-50"
+        style={{ backgroundColor: themeColors.accent }}
+      ></div>
 
-      {/* Baris Atas: Kategori & Saldo Koin */}
-      <div className="flex justify-between items-center relative z-10">
+      {/* Dekorasi Vektor Sulur Ajaib Melengkung */}
+      <svg className="absolute bottom-0 right-0 w-[60%] h-[120%] opacity-20 pointer-events-none text-white drop-shadow-[0_0_10px_white]" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M 50,120 Q 80,80 120,40" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M 30,120 Q 70,60 120,10" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" strokeLinecap="round" />
+        <path d="M 85,55 Q 100,50 110,65 Q 95,70 85,55 Z" fill="currentColor" opacity="0.8" />
+        <path d="M 95,25 Q 115,20 120,35 Q 105,40 95,25 Z" fill="currentColor" opacity="0.6" />
+        {/* Titik serbuk peri (Pollen) */}
+        <circle cx="85" cy="45" r="1.5" fill="currentColor" />
+        <circle cx="100" cy="15" r="1" fill="currentColor" />
+        <circle cx="70" cy="65" r="2" fill="currentColor" />
+      </svg>
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-main)]/10 to-transparent pointer-events-none" />
+
+      {/* =========================================
+          BARIS ATAS: Logo & Koin (Simfoni Minimalis)
+          ========================================= */}
+      <div className="flex justify-between items-center relative z-10 w-full mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--gold)]/80 animate-ping"></div>
-          <span className="text-[10px] tracking-[0.25em] uppercase text-white/50 font-bold">
-            {t('hdr_eyebrow')}
+          <SparkleIcon color={themeColors.accent} />
+          <span className="text-[10px] tracking-[0.2em] font-medium text-white/70 uppercase">
+            Pixie Journal
           </span>
         </div>
         
-        {/* Lencana Koin Mewah */}
-        <motion.div 
+        {/* Lencana koin sekarang lebih bulat dan memudar seperti gelembung embun */}
+        <motion.button 
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }}
-          className="bg-black/30 border border-white/20 rounded-full px-3 py-1.5 text-[var(--gold-light)] font-bold text-[13px] flex items-center gap-1.5 backdrop-blur-md cursor-pointer shadow-[0_4px_15px_rgba(0,0,0,0.2)]"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md shadow-inner"
         >
-          <span className="text-[15px] animate-pulse drop-shadow-[0_0_8px_rgba(245,200,66,0.8)]">✨</span> 
-          <span className="tracking-wide">{coins}</span>
-        </motion.div>
+          <span className="text-sm">✨</span>
+          <span className="text-xs font-bold text-white drop-shadow-sm">{coins}</span>
+        </motion.button>
       </div>
 
-      {/* Baris Tengah: Sapaan Nama & Rank */}
-      <div className="mt-7 flex flex-col relative z-10">
-        <div className="flex items-center gap-3 mb-1">
-          <h1 className="font-serif text-[36px] text-white leading-tight drop-shadow-md">
-            <span className="text-[var(--gold-light)] bg-clip-text text-transparent bg-gradient-to-b from-white to-[var(--gold-light)]">
-              {name || "Peri Kecil"},
-            </span>
-          </h1>
+      {/* =========================================
+          AREA TENGAH: Nama Elegan & Kutipan Minimalis
+          ========================================= */}
+      <div className="flex items-end justify-between relative z-10 flex-grow mb-6">
+        
+        {/* Sisi Kiri: Sapaan */}
+        <div className="flex flex-col gap-1.5 w-[65%]">
+          <div className="inline-flex items-center w-fit border border-white/15 px-2.5 py-0.5 rounded-full bg-white/5 backdrop-blur-sm">
+            <span className="text-[9px] font-bold text-white/80 uppercase tracking-widest">{rankStr}</span>
+          </div>
           
-          {/* Lencana Rank Glassmorphism (Premium Look) */}
-          <div className="relative overflow-hidden bg-white/10 border border-white/20 px-3 py-1 rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.1)] backdrop-blur-sm group-hover:border-white/40 transition-colors duration-500">
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] animate-[shimmer_2s_infinite]"></div>
-            <span className="relative z-10 text-[11px] font-bold text-[var(--gold-light)] tracking-wider flex items-center gap-1">
-              <span>{rankEmoji}</span> {rankStr}
-            </span>
+          <h1 className="font-serif text-[34px] leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.15)] mt-1">
+            {name || "Peri Kecil"},
+          </h1>
+          <span className="text-white/60 font-sans text-[11px] font-medium tracking-wide mt-1">
+            Siap merangkai mantra baru hari ini?
+          </span>
+        </div>
+
+        {/* Sisi Kanan: Ruang untuk ilustrasi peri atau quote minimalis (Transparan) */}
+        <div className="w-[35%] flex justify-end">
+           <div className="text-right">
+             <div className="text-[28px] leading-none drop-shadow-md">
+               🧚🏼‍♀️
+             </div>
+           </div>
+        </div>
+
+      </div>
+
+      {/* =========================================
+          AREA BAWAH: Progress Bar (Dew/Vine Style)
+          ========================================= */}
+      <div className="relative z-10 w-full mt-auto">
+        <div className="flex justify-between items-end mb-2 px-1">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[9px] font-bold text-white/50 tracking-widest uppercase">{t('prog_total_lbl')}</span>
+            <span className="text-[10px] text-white/90 font-medium tracking-wider">{blockLabel}</span>
+          </div>
+          
+          {/* Angka progres minimalis, melayang */}
+          <div className="flex items-baseline gap-0.5">
+             <span className="text-2xl font-sans font-bold text-white leading-none tracking-tight">
+                {progressPct}
+             </span>
+             <span className="text-[10px] font-medium text-white/60 mb-0.5">%</span>
           </div>
         </div>
-        
-        <div className="flex justify-between items-start mt-2">
-          <div className="flex flex-col gap-1.5">
-            <h2 className="font-serif text-[20px] text-white/90 leading-snug drop-shadow-sm">
-              {t('hdr_greeting')}
-            </h2>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-white/40 font-semibold uppercase tracking-widest border border-white/10 px-2 py-0.5 rounded-full bg-white/5">
-                {new Date().toLocaleDateString('id-ID', { weekday: 'long' })}
-              </span>
-              <span className="text-[11px] text-white/60 font-medium">
-                {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-              </span>
-            </div>
-          </div>
 
-          {/* Kotak Quote Interaktif & Transparan */}
+        {/* Progress Bar (Sulur Kaca Tipis & Mengalir) */}
+        <div className="h-[6px] w-full rounded-full bg-white/10 overflow-hidden shadow-inner backdrop-blur-md relative border border-white/5">
           <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="hidden sm:flex max-w-[45%] flex-col items-end text-right px-4 py-2 bg-black/20 rounded-2xl border border-white/5 backdrop-blur-sm"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute top-0 left-0 bottom-0 rounded-full"
+            style={{ 
+              background: `linear-gradient(90deg, ${themeColors.accent}33 0%, ${themeColors.accent}ff 100%)`,
+              boxShadow: `0 0 10px ${themeColors.accent}aa`
+            }}
           >
-            <p style={{ fontFamily: 'var(--serif)' }} className="text-[13px] text-white/90 italic font-medium leading-relaxed drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
-              ❝ Sihir terkuat adalah ketekunanmu sendiri. ❞
-            </p>
-            <span className="text-[8px] text-[var(--gold-light)] uppercase tracking-[0.3em] font-bold mt-2 opacity-60">
-              Mantra Hari Ini
-            </span>
+            {/* Kilau kecil (embun berjalan) di pucuk progress */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_3px_white] blur-[1px]"></div>
           </motion.div>
         </div>
+
+        {/* Informasi slide (sangat minimalis modern, P C N spacing) */}
+        <div className="flex justify-between mt-2 px-1 text-[10px] font-medium text-white/40 uppercase tracking-widest">
+           <span>{doneCount} S L I D E S</span>
+           <span>/ {target} M I S S I O N</span>
+        </div>
       </div>
 
-      {/* Baris Bawah: Panel Progress Membaca */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }} 
-        animate={{ y: 0, opacity: 1 }} 
-        transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 20 }}
-        className="flex items-center gap-5 mt-8 relative z-10 bg-black/20 rounded-[28px] p-5 border border-white/10 backdrop-blur-xl shadow-[inset_0_2px_20px_rgba(255,255,255,0.05)]"
-      >
-        {/* Lingkaran Persentase dengan Glow Ekstra */}
-        <div className="relative w-[76px] h-[76px] flex-shrink-0 drop-shadow-[0_0_20px_rgba(245,200,66,0.3)]">
-          <svg width="76" height="76" viewBox="0 0 80 80" className="-rotate-90">
-            <defs>
-              <linearGradient id="goldGradProgress" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--gold-light)" />
-                <stop offset="50%" stopColor="var(--gold)" />
-                <stop offset="100%" stopColor="var(--gold-dark)" />
-              </linearGradient>
-            </defs>
-            <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="7" />
-            <circle cx="40" cy="40" r="34" fill="none" stroke="url(#goldGradProgress)" strokeWidth="7" strokeLinecap="round" 
-              style={{ strokeDasharray: circ, strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }} />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-0.5">
-            <span className="text-[17px] font-black text-[var(--gold-light)] leading-none tracking-tight">{progressPct}</span>
-            <span className="text-[9px] font-bold text-white/50">%</span>
-          </div>
-        </div>
-        
-        {/* Bar & Target Detail */}
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-2.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-white/60 uppercase tracking-[0.2em]">
-              <span className="text-[var(--gold)]">✦</span> {t('prog_total_lbl')}
-            </div>
-            <div className="text-[9px] font-bold text-white/90 bg-black/40 px-3 py-1 rounded-full border border-white/10 tracking-wider shadow-inner">
-              {blockLabel}
-            </div>
-          </div>
-          
-          <div className="h-2.5 bg-black/30 rounded-full mb-2.5 overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] p-[1.5px]">
-            <div className="h-full rounded-full bg-gradient-to-r from-[var(--gold-dark)] via-[var(--gold)] to-[var(--gold-light)] shadow-[0_0_12px_rgba(245,200,66,0.6)] relative" 
-                 style={{ width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-               {/* Titik Inti Kilau (Lens Flare di Ujung Bar) */}
-               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_4px_rgba(255,255,255,0.9)] animate-pulse" />
-            </div>
-          </div>
-          
-          <div className="flex justify-between text-[11px] font-medium text-white/40 pt-1">
-            <span className="flex items-baseline gap-1">
-              <strong className="text-white text-[14px]">{doneCount}</strong> 
-              <span className="tracking-wide uppercase text-[9px]">{t('prog_done_lbl')}</span>
-            </span>
-            <span className="flex items-baseline gap-1">
-              <span className="tracking-wide uppercase text-[9px]">{t('prog_target_lbl')}</span> 
-              <strong className="text-[var(--gold-light)] text-[14px]">{target}</strong>
-            </span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Partikel Animasi Bintang jatuh (Disetel ke fixed / relative berdasarkan CSS) */}
-      <div className="sparkles mix-blend-screen pointer-events-none" id="sparkles"></div>
-
-    </motion.div>
+    </div>
   );
 };
+
+// Komponen Ikon Ajaib Kecil
+const SparkleIcon = ({ color }: { color: string }) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+    <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" fill={color} opacity="0.9" />
+    <path d="M5 4L5.5 6.5L8 7L5.5 7.5L5 10L4.5 7.5L2 7L4.5 6.5L5 4Z" fill="white" opacity="0.6" />
+  </svg>
+);
