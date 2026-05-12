@@ -14,45 +14,70 @@ function App() {
 
   const renderActivePage = () => {
     switch (activeTab) {
-      case 'dashboard': 
-        return <Dashboard />;
-      case 'tracker': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Tracker Belum Dibuat 🌿</div>;
-      case 'reward': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Reward Belum Dibuat 🎁</div>;
-      case 'setting': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Pengaturan Belum Dibuat ⚙️</div>;
-      default: 
-        return <Dashboard />;
+      case 'dashboard': return <Dashboard />;
+      case 'tracker':
+        return (
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+            <span className="text-4xl">🌿</span>
+            <p className="text-[13px] font-semibold text-[var(--text-mid)]">Tracker sedang disiapkan</p>
+            <p className="text-[11px] text-[var(--text-soft)]">Fitur ini akan hadir segera</p>
+          </div>
+        );
+      case 'reward':
+        return (
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+            <span className="text-4xl">🎁</span>
+            <p className="text-[13px] font-semibold text-[var(--text-mid)]">Reward sedang disiapkan</p>
+            <p className="text-[11px] text-[var(--text-soft)]">Kumpulkan poin dulu ya!</p>
+          </div>
+        );
+      case 'setting':
+        return (
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+            <span className="text-4xl">⚙️</span>
+            <p className="text-[13px] font-semibold text-[var(--text-mid)]">Pengaturan sedang disiapkan</p>
+            <p className="text-[11px] text-[var(--text-soft)]">Sabar ya, peri sedang kerja keras!</p>
+          </div>
+        );
+      default: return <Dashboard />;
     }
   };
 
   return (
-    // Memastikan background mengambil dari CSS theme variables
-    <div style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-dark)', minHeight: '100vh', paddingBottom: '100px' }}>
-      <div id="ambient-layer"></div>
-      <div id="dim-overlay"></div>
+    <div className="min-h-screen bg-[var(--bg-main)] transition-colors duration-700 font-sans selection:bg-[var(--gold-pale)] selection:text-[var(--gold-dark)]">
+      <div id="ambient-layer" />
+      <div id="dim-overlay" />
 
-      {/* HEADER: Kaku, Berbatas Tegas, Rapi */}
       <Header />
 
-      {/* SYNC BAR ASLI */}
-      <div className="sync-bar ok" id="sync-bar">
-        <div className="sync-dot"></div>
-        <span id="sync-txt">✦ Tersinkron Penuh</span>
-      </div>
+      {/* Body — relative untuk gradient bleed */}
+      <main className="relative z-20 px-4 pt-2 pb-28">
 
-      {/* MAIN KONTEN ASLI */}
-      <main className="main">
-        <div className="pages-wrapper relative overflow-hidden">
+        {/* Gradient bleed dari hijau header ke krem body — efek kesatuan */}
+        <div className="body-gradient-bleed" />
+
+        {/* Badge tersinkron — sangat subtle */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="flex items-center justify-center gap-1.5 mb-3 relative z-10"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--green-leaf)] animate-[pulse_2.5s_ease-in-out_infinite] shadow-[0_0_5px_var(--green-leaf)]" />
+          <span className="text-[9px] font-bold text-[var(--text-soft)] uppercase tracking-wider opacity-50">
+            Tersinkron
+          </span>
+        </motion.div>
+
+        {/* Konten halaman dengan transisi */}
+        <div className="relative z-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ duration: 0.3 }}
-              style={{ width: '100%' }}
+              initial={{ opacity: 0, y: 10, scale: 0.988 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.988 }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
               {renderActivePage()}
             </motion.div>
@@ -60,12 +85,6 @@ function App() {
         </div>
       </main>
 
-      {/* FOOTER ASLI */}
-      <div className="fairy-footer">
-        ✦ <span id="footer-name">Revalina</span> — Pixie Dust Journey ✦
-      </div>
-
-      {/* TabBar Navigasi Bawah */}
       <TabBar />
     </div>
   );
