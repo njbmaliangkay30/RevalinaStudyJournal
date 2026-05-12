@@ -49,9 +49,9 @@ export const Header: React.FC = () => {
     }
   };
 
+  const getBorderTheme = () => theme === 'moon' ? 'rgba(138,180,248,0.2)' : theme === 'sakura' ? 'rgba(240,100,160,0.2)' : 'rgba(245,200,66,0.2)';
   const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
 
-  // Injeksi Keyframes Leaf Sway Asli Anda, TIDAK DIUBAH 
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -65,42 +65,35 @@ export const Header: React.FC = () => {
     return () => { document.head.removeChild(style); };
   }, []);
 
-  // 🪄 PENTING: Pada Baris Ini! 'borderBottom' dihapus. 'rounded-b' dihapus. 'paddingBottom' saya buat 100px.
   return (
+    // DI SINI PENGEMBALIAN DESAINNYA! 
+    // Menggunakan PADDING dan BORDER KAKU asli dari HTML lama.
     <div className="header"
       style={{ 
         background: getThemeBg(),
-        padding: '28px 20px 100px', 
+        padding: '28px 20px 22px', 
         position: 'relative', 
         overflow: 'hidden', 
-        zIndex: 10 
+        zIndex: 10, 
+        borderBottom: `2px solid ${getBorderTheme()}`, 
+        boxShadow: '0 4px 20px rgba(26, 74, 10, 0.4)' 
       }}
     >
-      {/* 🌟 1. CAHAYA SINEMATIK: DIPOSISIKAN PRESISI DI KIRI-ATAS DAN KANAN-BAWAH */}
+      
+      {/* 1. CAHAYA SINEMATIK */}
       <motion.div 
         animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.05, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: 'absolute', top: '-25%', left: '-10%', width: '70%', height: '80%',
-          background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`,
-          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0
-        }}
+        style={{ position: 'absolute', top: '-25%', left: '-10%', width: '70%', height: '80%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0 }}
       />
       <motion.div 
         animate={{ opacity: [0.05, 0.25, 0.05], scale: [0.95, 1.1, 0.95] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        style={{
-          position: 'absolute', bottom: '-20%', right: '-5%', width: '80%', height: '70%',
-          background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`,
-          pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0
-        }}
+        style={{ position: 'absolute', bottom: '-20%', right: '-5%', width: '80%', height: '70%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0 }}
       />
 
-      {/* 🍃 2. DAUN TINKERBELL */}
+      {/* 2. DAUN TINKERBELL & ANGIN */}
       <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '150px', height: '100px', top: '-15px', right: '-40px', transform: 'rotate(25deg)', filter: 'blur(3px)', animation: 'swayLeafGentle 10s infinite alternate ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.1)', width: '90px', height: '60px', top: '50px', left: '-20px', transform: 'rotate(50deg)', filter: 'blur(4px)', animation: 'swayLeafReverse 12s infinite alternate ease-in-out' }}></div>
-
         <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.15)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.1)', width: '120px', height: '80px', top: '-20px', right: '-25px', transform: 'rotate(35deg)', transformOrigin: 'top right', animation: 'swayLeafGentle 8s infinite ease-in-out' }}></div>
         <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.2)', boxShadow: 'inset 0 0 8px rgba(245,200,66,0.2), 0 0 4px rgba(245,200,66,0.08)', border: '1px solid rgba(245,200,66,0.12)', width: '80px', height: '50px', bottom: '-10px', right: '25%', transform: 'rotate(-15deg)', transformOrigin: 'bottom right', animation: 'swayLeafReverse 7s infinite ease-in-out' }}></div>
         <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.18)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.15)', width: '70px', height: '45px', top: '30px', left: '-15px', transform: 'rotate(60deg)', transformOrigin: 'left center', animation: 'swayLeafGentle 9s infinite ease-in-out' }}></div>
@@ -110,139 +103,116 @@ export const Header: React.FC = () => {
         <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.12)', border: '1px solid rgba(141,201,90,0.1)', width: '45px', height: '30px', top: '40%', right: '10%', animation: 'driftAway 18s infinite ease-in-out', animationDelay: '6s' }}></div>
       </div>
       
-      {/* ✨ 3. SISTEM PARTIKEL DEBU PERI LEBIH PADAT */}
+      {/* 3. SISTEM PARTIKEL DEBU PERI */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
-        {Array.from({ length: 60 }).map((_, i) => {
+        {Array.from({ length: 45 }).map((_, i) => {
           const size = Math.random() * 4 + 2; 
           const color = Math.random() > 0.4 ? '#fff' : glowColor;
           return (
             <div 
               key={i}
               style={{
-                position: 'absolute', bottom: `-${Math.random() * 50}px`, left: `${Math.random() * 100}%`,
-                width: `${size}px`, height: `${size}px`, backgroundColor: color, borderRadius: '50%',
-                boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`,
-                animation: `dustRise ${Math.random() * 7 + 4}s infinite linear`, animationDelay: `${Math.random() * 6}s`, opacity: 0,
-                filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)`
+                position: 'absolute', bottom: `-${Math.random() * 50}px`, left: `${Math.random() * 100}%`, width: `${size}px`, height: `${size}px`, backgroundColor: color, borderRadius: '50%', boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`, animation: `dustRise ${Math.random() * 6 + 5}s infinite linear`, animationDelay: `${Math.random() * 6}s`, opacity: 0, filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)`
               }}
             />
           );
         })}
       </div>
 
-      {/* --- KONTEN TEKS --- */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
-        <div style={{ fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', fontWeight: 700, textShadow: '0 0 8px rgba(255,255,255,0.3)' }}>
-          {t('hdr_eyebrow')}
+      {/* --- KONTEN (100% LAYOUT ORISINAL DENGAN TIPOGRAFI BARU) --- */}
+      <div className="header-top-row" style={{ position: 'relative', zIndex: 10 }}>
+        <div className="header-eyebrow">
+          <span>{t('hdr_eyebrow')}</span>
         </div>
-        
         <motion.div 
           whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: '12px', padding: '4px 10px', color: '#ffe478', fontWeight: 800, fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', boxShadow: 'inset 0 1px 4px rgba(255,255,255,0.1), 0 0 10px rgba(245,200,66,0.1)' }}
+          className="coin-badge cursor-pointer"
         >
           <motion.span animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: '14px', filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.8))' }}>✨</motion.span> 
-          <span style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{coins}</span>
+          <span>{coins}</span>
         </motion.div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px', position: 'relative', zIndex: 10, marginTop: '10px' }}>
-        <motion.h1 
-          animate={{ opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          style={{ 
-            fontFamily: "'Cormorant Garamond', 'Alice', serif", fontSize: '38px', fontWeight: 700, fontStyle: 'italic', 
-            lineHeight: 1, margin: 0, backgroundImage: 'linear-gradient(to bottom, #ffffff 40%, #fef08a 100%)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 10px rgba(255,255,255,0.2))'
-          }}
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px', position: 'relative', zIndex: 10, marginTop: '8px' }}>
+        <h1 
+          style={{ fontFamily: "'Cormorant Garamond', 'Alice', serif", fontSize: '34px', fontWeight: 600, fontStyle: 'italic', lineHeight: 1, margin: 0, backgroundImage: 'linear-gradient(to bottom, #ffffff 40%, #fef08a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.3))' }}
         >
           {name || "Peri Kecil"},
-        </motion.h1>
+        </h1>
         
-        <div style={{ position: 'relative' }}>
-          <div style={{ position: 'absolute', inset: 0, background: '#f5c842', filter: 'blur(8px)', opacity: 0.3, borderRadius: '12px' }}></div>
-          <span style={{ position: 'relative', background: 'rgba(245,200,66,0.15)', border: '1px solid rgba(245,200,66,0.4)', padding: '4px 10px', borderRadius: '12px', color: '#ffe478', fontWeight: 700, fontSize: '10px', fontFamily: '"Quicksand", system-ui, sans-serif', letterSpacing: '0.05em' }}>
-            {rankStr}
-          </span>
-        </div>
+        <span className="rank-badge" style={{ padding: '3px 10px', fontSize: '11px' }}>
+          {rankStr}
+        </span>
       </div>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '-4px', position: 'relative', zIndex: 10 }}>
         <div>
-          <div style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '26px', color: '#ffe478', textShadow: '0 0 15px rgba(245,200,66,0.5)', marginTop: '2px', marginBottom: '2px', lineHeight: 1.15, fontWeight: 600 }}>
+          <div style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '24px', color: '#ffe478', textShadow: '0 0 15px rgba(245,200,66,0.4)', marginTop: '4px', marginBottom: '2px', lineHeight: 1.15 }}>
             <span>{greeting}</span>
           </div>
-          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', fontWeight: 600, fontFamily: '"Quicksand", system-ui, sans-serif' }}>
+          <div className="header-sub" style={{ marginTop: '2px', fontSize: '11px', fontWeight: 500 }}>
             {new Date().toLocaleDateString(lang === 'id' ? "id-ID" : "en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
         
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={quote}
-            initial={{ opacity: 0, y: 5 }} animate={{ opacity: 0.95, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.8 }}
-            style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '15px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.7)', lineHeight: '1.3', fontWeight: 600, maxWidth: '45%', textAlign: 'right', marginTop: '6px' }}
+          <motion.div key={quote} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 0.95, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.8 }}
+            style={{ fontFamily: '"Alice", Georgia, serif', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}
           >
             ❝ {quote} ❞
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '24px', position: 'relative', zIndex: 10 }}>
+      <div className="prog-wrap" style={{ marginTop: '20px', position: 'relative', zIndex: 10 }}>
         
-        <motion.div animate={{ y: [-5, 5, -5] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'relative', width: '85px', height: '85px', flexShrink: 0, filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.4))' }}>
-          <div style={{ position: 'absolute', inset: 4, borderRadius: '50%', background: '#f5c842', filter: 'blur(15px)', opacity: 0.15 }}></div>
-
-          <svg width="85" height="85" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
+        {/* RING MELAYANG */}
+        <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0, filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.2))' }}>
+          <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
             <defs>
               <linearGradient id="goldGradInline" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#fff" />
+                <stop offset="0%" stopColor="#B8900A" />
                 <stop offset="60%" stopColor="#F5C842" />
-                <stop offset="100%" stopColor="#b8900a" />
+                <stop offset="100%" stopColor="#FFE478" />
               </linearGradient>
             </defs>
-            <circle cx="40" cy="40" r="34" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+            <circle cx="40" cy="40" r="34" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
             <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(245,200,66,0.15)" strokeWidth="6" />
             <circle cx="40" cy="40" r="34" fill="none" stroke="url(#goldGradInline)" strokeWidth="6" strokeLinecap="round" strokeDasharray="213.6" strokeDashoffset={strokeOffset} style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)' }} />
           </svg>
           
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <motion.div animate={{ opacity: [0.8, 1, 0.8], scale: [0.98, 1.02, 0.98] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: '20px', fontWeight: 800, color: '#fff', lineHeight: 1, fontFamily: '"Quicksand", system-ui, sans-serif', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>{progressPct}</motion.div>
-            <div style={{ fontSize: '9px', fontWeight: 700, color: '#f5c842', marginTop: '3px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>%</div>
+            <div style={{ fontSize: '18px', fontWeight: 700, color: '#ffe478', lineHeight: 1 }}>{progressPct}%</div>
+            <div style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginTop: '2px', textTransform: 'uppercase' }}>{t('prog_lbl')}</div>
           </div>
           
           {progressPct > 0 && (
             <motion.div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}>
-              <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ position: 'absolute', top: '-3px', left: '50%', transform: 'translate(-50%, -50%)', width: '7px', height: '7px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 12px 4px rgba(245,200,66,0.9), 0 0 4px 1px #fff' }}></motion.div>
+               <div style={{ position: 'absolute', top: '-1px', left: '50%', transform: 'translate(-50%, -50%)', width: '5px', height: '5px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 10px 3px rgba(245,200,66,0.8)' }}></div>
             </motion.div>
           )}
         </motion.div>
         
-        <div style={{ flex: 1, fontFamily: '"Quicksand", system-ui, sans-serif' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.05em', margin: 0, textTransform: 'uppercase' }}>
-              {t('prog_total_lbl')}
-            </div>
-            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '4px 10px', fontSize: '10px', fontWeight: 700, color: '#fff', display: 'inline-flex', alignItems: 'center', gap: '4px', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}>
-              <span style={{ fontSize: '12px', color: '#f5c842' }}>✦</span> {blockLabel}
+        {/* BARIS INFO HORIZONTAL (100% ORISINAL) */}
+        <div className="prog-info" style={{ flex: 1, paddingLeft: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '7px' }}>
+            <div className="prog-label" style={{ marginBottom: 0 }}>{t('prog_total_lbl')}</div>
+            <div className="date-badge">
+              ✦ {blockLabel}
             </div>
           </div>
 
-          <div style={{ position: 'relative', height: '6px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', marginBottom: '8px', width: '100%', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, height: '6px', borderRadius: '4px', background: 'linear-gradient(90deg, #b8900a, #F5C842, #fff)', boxShadow: '0 0 12px rgba(245,200,66,0.9)', width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(.4,0,.2,1)' }}></div>
-            {progressPct > 0 && (
-              <motion.div animate={{ x: ['-100%', '250%'] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.5 }} style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '40px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)', transform: 'skewX(-20deg)', pointerEvents: 'none' }} />
-            )}
+          <div style={{ position: 'relative', height: '5px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', marginBottom: '7px', width: '100%', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, height: '5px', borderRadius: '3px', background: 'linear-gradient(90deg, #b8900a, #F5C842, #fff)', boxShadow: '0 0 12px rgba(245,200,66,0.9)', width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(.4,0,.2,1)' }}></div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}>
-            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}><strong style={{ color: '#ffe478', fontSize: '15px', textShadow: '0 0 8px rgba(245,200,66,0.5)' }}>{doneCount}</strong> {t('prog_done_lbl')}</span>
-            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>{t('prog_target_lbl')} <strong style={{ color: '#fff', fontSize: '14px', textShadow: '0 0 5px rgba(255,255,255,0.5)' }}>{target}</strong></span>
+          <div className="prog-nums" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span><strong style={{ color: '#ffe478', textShadow: '0 0 5px rgba(245,200,66,0.3)' }}>{doneCount}</strong> {t('prog_done_lbl')}</span>
+            <span>{t('prog_target_lbl')} <strong style={{ color: '#ffe478', textShadow: '0 0 5px rgba(245,200,66,0.3)' }}>{target}</strong></span>
           </div>
         </div>
 
       </div>
-
     </div>
   );
 };
