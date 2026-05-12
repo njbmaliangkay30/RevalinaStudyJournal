@@ -52,7 +52,16 @@ export const Header: React.FC = () => {
   const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
 
   return (
-    <div className="header relative z-10 overflow-hidden px-5 pt-7 pb-20" style={{ background: getThemeBg() }}>
+    <div className="header relative z-10 px-5 pt-6 pb-8">
+      {/* BACKGROUND DENGAN EFEK FADE-OUT KE BAWAH */}
+      <div 
+        className="absolute inset-0 z-[-1] pointer-events-none" 
+        style={{ 
+          background: getThemeBg(),
+          maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)'
+        }} 
+      />
       
       {/* 🌟 NAFAS HUTAN */}
       <motion.div 
@@ -181,7 +190,7 @@ export const Header: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      <div className="flex items-center gap-5 mt-6 relative z-10">
+      <div className="flex items-center gap-5 mt-3 relative z-10">
         <motion.div 
           animate={{ y: [-5, 5, -5] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
