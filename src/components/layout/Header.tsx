@@ -35,157 +35,136 @@ export const Header: React.FC = () => {
 
   let blockLabel = "Belum Diatur";
   if (blockStart && blockEnd) {
-    const s = new Date(blockStart).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
-    const e = new Date(blockEnd).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+    const s = new Date(blockStart).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
+    const e = new Date(blockEnd).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
     blockLabel = `${s} – ${e}`;
   }
 
-  const getThemeBg = () => {
-    switch (theme) {
-      case 'moon': return 'linear-gradient(160deg, #04060f 0%, #080c1c 45%, #0c1228 100%)';
-      case 'sakura': return 'linear-gradient(160deg, #1a050e 0%, #360a1c 45%, #48102a 100%)';
-      case 'dark': return 'linear-gradient(160deg, #0f2a06 0%, #1a4a0a 45%, #234f10 100%)';
-      default: return 'linear-gradient(160deg, #0f2a06 0%, #1a4a0a 45%, #234f10 100%)'; 
-    }
-  };
-
-  const getBorderTheme = () => theme === 'moon' ? 'rgba(138,180,248,0.2)' : theme === 'sakura' ? 'rgba(240,100,160,0.2)' : 'rgba(245,200,66,0.2)';
-  const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d'; 
-
+  // Inject Animasi Hutan
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
-      @keyframes swayLeafGentle { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(6deg) scale(1.02); } }
-      @keyframes swayLeafReverse { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-8deg) scale(0.98); } }
-      @keyframes driftAway { 0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; } 15% { opacity: 0.6; } 85% { opacity: 0.4; } 100% { transform: translate(150px, -200px) rotate(45deg) scale(0.6); opacity: 0; } }
-      @keyframes driftAwayReverse { 0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.3; } 100% { transform: translate(-200px, -150px) rotate(-60deg) scale(0.5); opacity: 0; } }
+      @keyframes flyLeaf1 { 0% { transform: translate(0, 0) rotate(35deg) scale(1); opacity: 0; } 15% { opacity: 0.8; } 60% { opacity: 0.8; } 100% { transform: translate(120px, -60px) rotate(60deg) scale(0.6); opacity: 0; } }
+      @keyframes flyLeaf2 { 0% { transform: translate(0, 0) rotate(-15deg) scale(1); opacity: 0; } 20% { opacity: 0.7; } 75% { opacity: 0.7; } 100% { transform: translate(80px, -40px) rotate(-30deg) scale(0.7); opacity: 0; } }
+      @keyframes flyLeaf3 { 0% { transform: translate(0, 0) rotate(60deg) scale(1); opacity: 0; } 25% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translate(-100px, 50px) rotate(30deg) scale(0.5); opacity: 0; } }
+      @keyframes flyLeaf4 { 0% { transform: translate(0, 0) rotate(120deg) scale(1); opacity: 0; } 10% { opacity: 0.9; } 60% { opacity: 0.9; } 100% { transform: translate(150px, -150px) rotate(180deg) scale(0.4); opacity: 0; } }
       @keyframes dustRise { 0% { transform: translateY(0px) scale(0.5); opacity: 0; } 20% { opacity: 0.9; } 80% { opacity: 0.6; } 100% { transform: translateY(-400px) scale(1.5); opacity: 0; } }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };
   }, []);
 
+  const glowColor = theme === 'moon' ? '#60a5fa' : theme === 'sakura' ? '#fb7185' : '#fcd34d';
+
   return (
-    // DI SINI PENGEMBALIAN DESAINNYA! 
-    // Menggunakan PADDING dan BORDER KAKU asli dari HTML lama.
-    <div className="header"
-      style={{ 
-        background: getThemeBg(),
-        padding: '28px 20px 22px', 
-        position: 'relative', 
-        overflow: 'hidden', 
-        zIndex: 10, 
-        borderBottom: `2px solid ${getBorderTheme()}`, 
-        boxShadow: '0 4px 20px rgba(26, 74, 10, 0.4)' 
-      }}
-    >
-      
-      {/* 1. CAHAYA SINEMATIK */}
+    // Memanggil MURNI "className='header'" dari index.css Anda agar background aslinya bekerja 100%
+    <div className="header relative overflow-hidden z-10">
+
+      {/* 🌟 AURA MAGIS YANG BERDETAK DI BACKGROUND */}
       <motion.div 
-        animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.05, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        style={{ position: 'absolute', top: '-25%', left: '-10%', width: '70%', height: '80%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0 }}
+        animate={{ opacity: [0.15, 0.35, 0.15], scale: [0.95, 1.1, 0.95] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        style={{ position: 'absolute', top: '-25%', left: '-15%', width: '70%', height: '80%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0 }}
       />
       <motion.div 
-        animate={{ opacity: [0.05, 0.25, 0.05], scale: [0.95, 1.1, 0.95] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        style={{ position: 'absolute', bottom: '-20%', right: '-5%', width: '80%', height: '70%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 60%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(35px)', zIndex: 0 }}
+        animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.05, 1] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        style={{ position: 'absolute', bottom: '-25%', right: '-15%', width: '80%', height: '70%', background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 65%)`, pointerEvents: 'none', mixBlendMode: 'screen', filter: 'blur(45px)', zIndex: 0 }}
       />
 
-      {/* 2. DAUN TINKERBELL & ANGIN */}
-      <div className="header-leaves" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.15)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.1)', width: '120px', height: '80px', top: '-20px', right: '-25px', transform: 'rotate(35deg)', transformOrigin: 'top right', animation: 'swayLeafGentle 8s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.2)', boxShadow: 'inset 0 0 8px rgba(245,200,66,0.2), 0 0 4px rgba(245,200,66,0.08)', border: '1px solid rgba(245,200,66,0.12)', width: '80px', height: '50px', bottom: '-10px', right: '25%', transform: 'rotate(-15deg)', transformOrigin: 'bottom right', animation: 'swayLeafReverse 7s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.18)', boxShadow: 'inset 0 0 10px rgba(245,200,66,0.15), 0 0 5px rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.15)', width: '70px', height: '45px', top: '30px', left: '-15px', transform: 'rotate(60deg)', transformOrigin: 'left center', animation: 'swayLeafGentle 9s infinite ease-in-out' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.15)', boxShadow: 'inset 0 0 12px rgba(255,255,255,0.2), 0 0 8px rgba(245,200,66,0.3)', border: '1px solid rgba(245,200,66,0.25)', width: '40px', height: '25px', top: '10px', right: '40%', transform: 'rotate(120deg)', transformOrigin: 'top left', animation: 'swayLeafReverse 6s infinite ease-in-out' }}></div>
-        
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(245,200,66,0.12)', border: '1px solid rgba(245,200,66,0.15)', width: '30px', height: '18px', bottom: '20px', left: '20%', animation: 'driftAwayReverse 15s infinite ease-in-out', animationDelay: '2s' }}></div>
-        <div style={{ position: 'absolute', borderRadius: '50% 0 50% 0', background: 'rgba(141,201,90,0.12)', border: '1px solid rgba(141,201,90,0.1)', width: '45px', height: '30px', top: '40%', right: '10%', animation: 'driftAway 18s infinite ease-in-out', animationDelay: '6s' }}></div>
-      </div>
-      
-      {/* 3. SISTEM PARTIKEL DEBU PERI */}
+      {/* ✨ DEBU PERI MENGALIR KE ATAS */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 2 }}>
-        {Array.from({ length: 45 }).map((_, i) => {
+        {Array.from({ length: 50 }).map((_, i) => {
           const size = Math.random() * 4 + 2; 
           const color = Math.random() > 0.4 ? '#fff' : glowColor;
           return (
             <div 
               key={i}
               style={{
-                position: 'absolute', bottom: `-${Math.random() * 50}px`, left: `${Math.random() * 100}%`, width: `${size}px`, height: `${size}px`, backgroundColor: color, borderRadius: '50%', boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`, animation: `dustRise ${Math.random() * 6 + 5}s infinite linear`, animationDelay: `${Math.random() * 6}s`, opacity: 0, filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)`
+                position: 'absolute', bottom: `-${Math.random() * 50}px`, left: `${Math.random() * 100}%`,
+                width: `${size}px`, height: `${size}px`, backgroundColor: color, borderRadius: '50%',
+                boxShadow: `0 0 ${size * 2}px ${color}, 0 0 ${size}px #fff`,
+                animation: `dustRise ${Math.random() * 6 + 5}s infinite linear`, animationDelay: `${Math.random() * 6}s`, opacity: 0,
+                filter: `blur(${Math.random() > 0.7 ? 1.5 : 0}px)`
               }}
             />
           );
         })}
       </div>
 
-      {/* --- KONTEN (100% LAYOUT ORISINAL DENGAN TIPOGRAFI BARU) --- */}
+      {/* 🍃 MENGEMBALIKAN KELAS HTML ORIGINAL UNTUK DAUN (Supaya bentuk & pendar hijaunya tidak rusak) */}
+      <div className="header-leaves" style={{ zIndex: 3 }}>
+        <div className="leaf leaf1" style={{ animation: 'flyLeaf1 14s infinite ease-in-out', animationDelay: '1s' }}></div>
+        <div className="leaf leaf2" style={{ animation: 'flyLeaf2 16s infinite ease-in-out', animationDelay: '5s' }}></div>
+        <div className="leaf leaf3" style={{ animation: 'flyLeaf3 13s infinite ease-in-out', animationDelay: '2.5s' }}></div>
+        <div className="leaf leaf4" style={{ animation: 'flyLeaf4 11s infinite ease-in-out', animationDelay: '8s' }}></div>
+      </div>
+      
+      {/* --- MURNI HTML KONTEN ANDA --- */}
       <div className="header-top-row" style={{ position: 'relative', zIndex: 10 }}>
         <div className="header-eyebrow">
           <span>{t('hdr_eyebrow')}</span>
         </div>
+        
+        {/* Kelas 'coin-badge' dipakai persis, saya tambahkan properti gerak saja */}
         <motion.div 
-          whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
           className="coin-badge cursor-pointer"
+          whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         >
-          <motion.span animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: '14px', filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.8))' }}>✨</motion.span> 
+          <motion.span animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>✨</motion.span> 
           <span>{coins}</span>
         </motion.div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px', position: 'relative', zIndex: 10, marginTop: '8px' }}>
-        <h1 
-          style={{ fontFamily: "'Cormorant Garamond', 'Alice', serif", fontSize: '34px', fontWeight: 600, fontStyle: 'italic', lineHeight: 1, margin: 0, backgroundImage: 'linear-gradient(to bottom, #ffffff 40%, #fef08a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.3))' }}
-        >
+      <div className="header-name" style={{ position: 'relative', zIndex: 10 }}>
+        <span className="name-text" style={{ fontFamily: "'Cormorant Garamond', 'Alice', serif", fontStyle: 'italic', fontWeight: 600 }}>
           {name || "Peri Kecil"},
-        </h1>
-        
-        <span className="rank-badge" style={{ padding: '3px 10px', fontSize: '11px' }}>
+        </span>
+        <span className="rank-badge">
           {rankStr}
         </span>
       </div>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '-4px', position: 'relative', zIndex: 10 }}>
         <div>
-          <div style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '24px', color: '#ffe478', textShadow: '0 0 15px rgba(245,200,66,0.4)', marginTop: '4px', marginBottom: '2px', lineHeight: 1.15 }}>
-            <span>{greeting}</span>
+          <div className="header-name" style={{ fontSize: '24px', marginTop: '4px', marginBottom: '2px' }}>
+            <span className="name-text" style={{ fontFamily: "'Cormorant Garamond', 'Alice', serif", fontWeight: 600 }}>{greeting}</span>
           </div>
-          <div className="header-sub" style={{ marginTop: '2px', fontSize: '11px', fontWeight: 500 }}>
+          <div className="header-sub" style={{ marginTop: '2px' }}>
             {new Date().toLocaleDateString(lang === 'id' ? "id-ID" : "en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
         </div>
         
         <AnimatePresence mode="wait">
           <motion.div key={quote} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 0.95, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.8 }}
-            style={{ fontFamily: '"Alice", Georgia, serif', fontSize: '14px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}
+            style={{ fontFamily: '"Cormorant Garamond", "Alice", serif', fontSize: '15px', color: '#fff', fontStyle: 'italic', textShadow: '0 0 12px rgba(255,255,255,0.8)', lineHeight: '1.4', fontWeight: 500, maxWidth: '48%', textAlign: 'right', marginTop: '8px' }}
           >
             ❝ {quote} ❞
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="prog-wrap" style={{ marginTop: '20px', position: 'relative', zIndex: 10 }}>
+      {/* --- BOX PROGRESS MURNI SESUAI ASLI --- */}
+      <div className="prog-wrap" style={{ position: 'relative', zIndex: 10, marginTop: '20px' }}>
         
-        {/* RING MELAYANG */}
-        <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0, filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.2))' }}>
-          <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: 'rotate(-90deg)' }}>
+        {/* Ring-outer murni HTML dengan tambahan fitur gerak */}
+        <motion.div className="ring-outer" animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
+          <svg width="80" height="80" viewBox="0 0 80 80">
             <defs>
-              <linearGradient id="goldGradInline" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#B8900A" />
                 <stop offset="60%" stopColor="#F5C842" />
                 <stop offset="100%" stopColor="#FFE478" />
               </linearGradient>
             </defs>
-            <circle cx="40" cy="40" r="34" fill="rgba(0,0,0,0.15)" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-            <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(245,200,66,0.15)" strokeWidth="6" />
-            <circle cx="40" cy="40" r="34" fill="none" stroke="url(#goldGradInline)" strokeWidth="6" strokeLinecap="round" strokeDasharray="213.6" strokeDashoffset={strokeOffset} style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)' }} />
+            <circle className="ring-bg" cx="40" cy="40" r="34" />
+            <circle className="ring-track" cx="40" cy="40" r="34" />
+            <circle className="ring-glow" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)' }} />
+            <circle className="ring-fill" cx="40" cy="40" r="34" style={{ strokeDashoffset: strokeOffset, transition: 'stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)' }} />
           </svg>
-          
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ fontSize: '18px', fontWeight: 700, color: '#ffe478', lineHeight: 1 }}>{progressPct}%</div>
-            <div style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginTop: '2px', textTransform: 'uppercase' }}>{t('prog_lbl')}</div>
+          <div className="ring-center">
+            <div className="ring-pct">{progressPct}%</div>
+            <div className="ring-lbl">{t('prog_lbl')}</div>
           </div>
-          
+
           {progressPct > 0 && (
             <motion.div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }}>
                <div style={{ position: 'absolute', top: '-1px', left: '50%', transform: 'translate(-50%, -50%)', width: '5px', height: '5px', borderRadius: '50%', background: '#fff', boxShadow: '0 0 10px 3px rgba(245,200,66,0.8)' }}></div>
@@ -193,8 +172,8 @@ export const Header: React.FC = () => {
           )}
         </motion.div>
         
-        {/* BARIS INFO HORIZONTAL (100% ORISINAL) */}
-        <div className="prog-info" style={{ flex: 1, paddingLeft: '8px' }}>
+        {/* Info Progress memanggil Class Asli "prog-info" , "prog-label", dll agar putih dan kuningnya KEMBALI */}
+        <div className="prog-info">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '7px' }}>
             <div className="prog-label" style={{ marginBottom: 0 }}>{t('prog_total_lbl')}</div>
             <div className="date-badge">
@@ -202,13 +181,17 @@ export const Header: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ position: 'relative', height: '5px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', marginBottom: '7px', width: '100%', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, height: '5px', borderRadius: '3px', background: 'linear-gradient(90deg, #b8900a, #F5C842, #fff)', boxShadow: '0 0 12px rgba(245,200,66,0.9)', width: `${progressPct}%`, transition: 'width 1.5s cubic-bezier(.4,0,.2,1)' }}></div>
+          <div className="prog-bar-track">
+            <div className="prog-bar-fill" style={{ width: `${progressPct}%`, transition: 'width 1.2s cubic-bezier(.4,0,.2,1)' }}></div>
+            {/* Animasi Sinar Tambahan Khusus yang numpang di Track Asli */}
+            {progressPct > 0 && (
+              <motion.div animate={{ x: ['-100%', '250%'] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.5 }} style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '40px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)', transform: 'skewX(-20deg)', pointerEvents: 'none' }} />
+            )}
           </div>
 
-          <div className="prog-nums" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span><strong style={{ color: '#ffe478', textShadow: '0 0 5px rgba(245,200,66,0.3)' }}>{doneCount}</strong> {t('prog_done_lbl')}</span>
-            <span>{t('prog_target_lbl')} <strong style={{ color: '#ffe478', textShadow: '0 0 5px rgba(245,200,66,0.3)' }}>{target}</strong></span>
+          <div className="prog-nums">
+            <span><strong>{doneCount}</strong> {t('prog_done_lbl')}</span>
+            <span>{t('prog_target_lbl')} <strong>{target}</strong></span>
           </div>
         </div>
 
