@@ -17,39 +17,40 @@ function App() {
       case 'dashboard': 
         return <Dashboard />;
       case 'tracker': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Tracker Belum Dibuat 🌿</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Tracker Belum Dibuat 🌿</div>;
       case 'reward': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Reward Belum Dibuat 🎁</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Reward Belum Dibuat 🎁</div>;
       case 'setting': 
-        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center', marginTop: '10px' }}>Halaman Pengaturan Belum Dibuat ⚙️</div>;
+        return <div className="fc-card" style={{ padding: '20px', textAlign: 'center' }}>Halaman Pengaturan Belum Dibuat ⚙️</div>;
       default: 
         return <Dashboard />;
     }
   };
 
   return (
-    <>
+    // Memastikan background mengambil dari CSS theme variables
+    <div style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-dark)', minHeight: '100vh', paddingBottom: '100px' }}>
       <div id="ambient-layer"></div>
       <div id="dim-overlay"></div>
 
+      {/* HEADER: Kaku, Berbatas Tegas, Rapi */}
       <Header />
-      
-      {/* Jika ini dihapus TabBar sebelumnya menumpuk. Saya tempatkan ia pada urutannya secara flow statis. 
-          TabBar floating CSS akan berjalan sesuai CSS index Anda yang sudah diletakkan fixed. */}
-      
+
+      {/* SYNC BAR ASLI */}
       <div className="sync-bar ok" id="sync-bar">
         <div className="sync-dot"></div>
         <span id="sync-txt">✦ Tersinkron Penuh</span>
       </div>
 
-      <div className="main" style={{ paddingBottom: '100px' }}>
-        <div className="pages-wrapper">
+      {/* MAIN KONTEN ASLI */}
+      <main className="main">
+        <div className="pages-wrapper relative overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.3 }}
               style={{ width: '100%' }}
             >
@@ -57,14 +58,16 @@ function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
+      </main>
 
-      <div className="fairy-footer" style={{ paddingBottom: '60px' }}>
+      {/* FOOTER ASLI */}
+      <div className="fairy-footer">
         ✦ <span id="footer-name">Revalina</span> — Pixie Dust Journey ✦
       </div>
 
+      {/* TabBar Navigasi Bawah */}
       <TabBar />
-    </>
+    </div>
   );
 }
 
